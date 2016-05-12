@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
 import com.github.nitrico.pomodoro.R
-import com.github.nitrico.pomodoro.trello.Trello
+import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.util.consume
 import kotlinx.android.synthetic.main.activity_main.*
 

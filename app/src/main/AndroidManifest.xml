@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".trello.Trello$LoginActivity" android:theme="@style/LoginTheme" />
+        <activity android:name=".data.Trello$LoginActivity" android:theme="@style/LoginTheme" />
 
     </application>
 

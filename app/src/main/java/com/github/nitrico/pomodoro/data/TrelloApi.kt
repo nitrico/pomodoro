@@ -1,4 +1,4 @@
-package com.github.nitrico.pomodoro.trello
+package com.github.nitrico.pomodoro.data
 
 import com.github.nitrico.pomodoro.BuildConfig
 import retrofit2.http.GET

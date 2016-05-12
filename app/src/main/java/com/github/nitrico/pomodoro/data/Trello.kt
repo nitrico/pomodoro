@@ -1,4 +1,4 @@
-package com.github.nitrico.pomodoro.trello
+package com.github.nitrico.pomodoro.data
 
 import android.content.Context
 import android.net.Uri
