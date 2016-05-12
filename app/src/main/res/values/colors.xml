@@ -1,0 +1,14 @@
+<resources>
+
+    <color name="primary">#F44336</color>
+    <color name="primaryDark">#D32F2F</color>
+    <color name="primaryLight">#FFCDD2</color>
+    <color name="accent">#8BC34A</color> <!-- #8BC34A / #4CAF50 -->
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#727272</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+
+    <color name="trello">#026AA7</color>
+
+</resources>

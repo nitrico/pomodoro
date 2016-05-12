@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">Pomodoro</string>
+
+    <string name="todo">To do</string>
+    <string name="doing">Doing</string>
+    <string name="done">Done</string>
+
+    <string name="settings">Settings</string>
+    <string name="trello">Trello</string>
+
+</resources>

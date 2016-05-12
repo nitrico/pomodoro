@@ -1,0 +1,6 @@
+<resources>
+
+    <bool name="portrait">true</bool>
+    <dimen name="status_bar_height">0dp</dimen>
+
+</resources>
