@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         abTitle.setText(R.string.app_name)
         abTitle.typeface = App.titleTypeface
         fab.setMargins(16.dp, 0, 16.dp, 16.dp + getNavigationBarHeight())
+        setupTabs()
 
         Trello.addSessionListener(this)
         if (savedInstanceState == null) Trello.init(this)
@@ -42,7 +43,6 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
     }
 
     override fun onLogIn() {
-        setupTabs()
         layout.snack(" logged in")
     }
 
@@ -68,12 +68,9 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
     private inner class TabsAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
         private val titles by stringArrayRes(R.array.titles)
         override fun getCount() = 3
-        override fun getItem(position: Int): ListFragment? {
-            if (!Trello.logged) return null
-            Trello.listIds.forEach { if (it.isNullOrEmpty()) return null }
-            return ListFragment.newInstance(Trello.listIds[position]!!, position == 0)
-        }
         override fun getPageTitle(position: Int) = titles[position]
+        override fun getItem(position: Int) = ListFragment
+                .newInstance(Trello.listIds[position]!!, position == 0)
     }
 
 }

@@ -19,15 +19,14 @@ import org.jetbrains.anko.support.v4.withArguments
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-class ListFragment private constructor() : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
+        const val KEY_NULL_LIST = "KEY_NULL_LIST"
         const val KEY_LIST_ID = "KEY_LIST_ID"
         const val KEY_IS_TODO = "KEY_IS_TODO"
-
-        fun newInstance(listId: String, isTodoList: Boolean = false): ListFragment {
-            return ListFragment().withArguments(KEY_LIST_ID to listId, KEY_IS_TODO to isTodoList)
-        }
+        fun newInstance(listId: String, isTodoList: Boolean = false)
+            = ListFragment().withArguments(KEY_LIST_ID to listId, KEY_IS_TODO to isTodoList)
     }
 
     private lateinit var listId: String
@@ -54,7 +53,8 @@ class ListFragment private constructor() : Fragment(), SwipeRefreshLayout.OnRefr
             setPadding(8.dp, 8.dp+80.dp, 8.dp, 8.dp+activity.getNavigationBarHeight())
             layoutManager = LinearLayoutManager(activity)
         }
-        if (savedInstanceState == null) onRefresh()
+        //if (savedInstanceState == null)
+            onRefresh()
     }
 
     override fun onRefresh() {
@@ -62,7 +62,6 @@ class ListFragment private constructor() : Fragment(), SwipeRefreshLayout.OnRefr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    it.forEach { println(it) }
                     adapter.clearItems()
                     adapter.addItems(it)
                     layout.isRefreshing = false
