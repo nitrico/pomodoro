@@ -1,0 +1,86 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/boardText"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/spinner_board_prompt" />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/boardSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:prompt="@string/spinner_board_prompt"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined" />
+
+        <TextView
+            android:id="@+id/todoText"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/spinner_todo_prompt" />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/todoSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:prompt="@string/spinner_todo_prompt"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined" />
+
+        <TextView
+            android:id="@+id/doingText"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/spinner_doing_prompt" />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/doingSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:prompt="@string/spinner_doing_prompt"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined" />
+
+        <TextView
+            android:id="@+id/doneText"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/spinner_done_prompt" />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/doneSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:prompt="@string/spinner_done_prompt"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined" />
+
+    </LinearLayout>
+
+</ScrollView>

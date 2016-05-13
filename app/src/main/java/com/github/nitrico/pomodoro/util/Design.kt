@@ -17,4 +17,3 @@ fun Snackbar.action(action: String, @ColorInt color: Int? = null, listener: (Vie
     setAction(action, listener)
     color?.let { setActionTextColor(color) }
 }
-

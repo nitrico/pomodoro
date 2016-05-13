@@ -29,6 +29,11 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor
 
 object Trello {
 
+    interface SessionListener {
+        fun onLogIn()
+        fun onLogOut()
+    }
+
     const val URL_BASE = "https://api.trello.com/"
     const val URL_REQUEST_TOKEN = "https://trello.com/1/OAuthGetRequestToken"
     const val URL_ACCESS_TOKEN = "https://trello.com/1/OAuthGetAccessToken"
@@ -59,10 +64,38 @@ object Trello {
         private set
     internal var token: String? = null
         private set
-    var user: TrelloMember? = null
-        private set
     var logged = false
         private set
+    var user: TrelloMember? = null
+        private set
+    /*
+    var boards: List<TrelloBoard> = emptyList()
+        private set
+    var lists: List<TrelloList> = emptyList()
+        private set
+    var todoList: List<TrelloCard> = emptyList()
+        private set
+    var doingList: List<TrelloCard> = emptyList()
+        private set
+    var doneList: List<TrelloCard> = emptyList()
+        private set
+    */
+
+    var boardId: String? = "5733f00584deae6ac11ac64b"
+    var todoListId: String? = "5733f00584deae6ac11ac64c"
+    var doingListId: String? = "5733f00584deae6ac11ac64d"
+    var doneListId: String? = "5733f00584deae6ac11ac64e"
+    val listIds = listOf(todoListId, doingListId, doneListId)
+
+    private val listeners = mutableListOf<SessionListener>()
+
+    fun addSessionListener(listener: SessionListener) {
+        if (!listeners.contains(listener)) listeners.add(listener)
+    }
+    fun removeSessionListener(listener: SessionListener) = listeners.remove(listener)
+
+    private fun dispatchLogIn() = listeners.forEach { it.onLogIn() }
+    private fun dispatchLogOut() = listeners.forEach { it.onLogOut() }
 
     fun init(context: Context) {
         this.context = context
@@ -94,30 +127,26 @@ object Trello {
                 .subscribe({
                     user = it
                     if (user != null) {
-                        context.toast(user!!.username + " logged in")
+                        //context.toast(user!!.username + " logged in")
                         println(user!!.email +" " +user!!.fullName)
                     }
+                    dispatchLogIn() // notify listeners
                 },{
-                    context.toast("There was an error :/")
+                    context.toast(it.message ?: "Unknown error")
                 })
-        /*api.getBoards(token!!)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapIterable { it }
-                .forEach { println("Board: " + it.name + it.lists) }
-                */
     }
 
     fun logOut() {
         logged = false
+        user = null
         token = null
         tokenSecret = null
         preferences.edit()
                 .putString(KEY_TOKEN, null)
                 .putString(KEY_TOKEN_SECRET, null)
                 .commit()
-        if (user != null) context.toast(user!!.username + " logged out")
-        user = null
+
+        dispatchLogOut() // notify listeners
     }
 
 

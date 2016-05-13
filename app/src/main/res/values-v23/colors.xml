@@ -1,0 +1,5 @@
+<resources>
+
+    <color name="statusBar">@android:color/transparent</color>
+
+</resources>

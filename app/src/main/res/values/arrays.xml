@@ -1,0 +1,9 @@
+<resources>
+
+    <string-array name="titles">
+        <item>@string/todo</item>
+        <item>@string/doing</item>
+        <item>@string/done</item>
+    </string-array>
+
+</resources>

@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/status_bar_height"
             app:title="@string/trello"
             app:contentInsetStart="0dp"
-            app:titleMarginStart="0dp"
+            app:titleMarginStart="8dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
     </android.support.design.widget.AppBarLayout>

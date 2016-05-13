@@ -1,40 +1,81 @@
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.MainActivity" >
+    android:layout_height="match_parent" >
 
-    <!--android:background="@android:color/white"-->
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="3dp" >
-        <!--android:layout_marginTop="@dimen/status_bar_height"
-            android:paddingRight="6dp"-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:minHeight="?android:attr/actionBarSize"
-            app:contentInsetStart="0dp"
-            app:titleMarginStart="16dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
-        </android.support.v7.widget.Toolbar>
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.MainActivity" >
+
+        <!--android:background="@android:color/white"-->
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@android:color/white" />
-    </android.support.design.widget.AppBarLayout>
+            android:background="#E0FFFFFF"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:elevation="2dp" >
+            <!--android:paddingRight="6dp"-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:minHeight="?android:attr/actionBarSize"
+                android:layout_marginTop="@dimen/status_bar_height"
+                app:contentInsetStart="0dp"
+                app:titleMarginStart="16dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
+                    <TextView
+                        android:id="@+id/abTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="12dp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/accent"
+                        android:textSize="40sp" />
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:tabMode="fixed"
+                        app:tabGravity="center"
+                        app:tabTextColor="@android:color/darker_gray"
+                        app:tabSelectedTextColor="@color/primaryText"
+                        app:tabIndicatorColor="@color/accent" />
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <!--android:background="@color/primaryDark"-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-</LinearLayout>
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_add" />
+
+</android.support.design.widget.CoordinatorLayout>
