@@ -1,0 +1,93 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/config"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_half"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_half"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/boardHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/board"
+            style="@style/HeaderText" />
+        <TextView
+            android:id="@+id/boardName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:text="Board name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/todoList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_half"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/todoHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/todo_list"
+            style="@style/HeaderText" />
+        <TextView
+            android:id="@+id/todoListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:text="Todo list name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/doingList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_half"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/doingHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/doing_list"
+            style="@style/HeaderText" />
+        <TextView
+            android:id="@+id/doingListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:text="Doing list name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/doneList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_half"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/doneHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/done_list"
+            style="@style/HeaderText" />
+        <TextView
+            android:id="@+id/doneListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:text="Done list name" />
+    </LinearLayout>
+
+</LinearLayout>

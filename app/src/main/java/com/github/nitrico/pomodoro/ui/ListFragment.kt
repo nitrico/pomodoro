@@ -45,12 +45,12 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         super.onActivityCreated(savedInstanceState)
         with(layout) {
             setOnRefreshListener(this@ListFragment)
-            setProgressViewOffset(true, 8.dp, (80+24).dp)
+            //setProgressViewOffset(true, 8.dp, (80+24).dp)
             setColorSchemeResources(android.R.color.white)
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
         with(list) {
-            setPadding(8.dp, 8.dp+80.dp, 8.dp, 8.dp+activity.getNavigationBarHeight())
+            setPadding(8.dp, 8.dp/*+80.dp*/, 8.dp, 8.dp+activity.getNavigationBarHeight())
             layoutManager = LinearLayoutManager(activity)
         }
         //if (savedInstanceState == null)

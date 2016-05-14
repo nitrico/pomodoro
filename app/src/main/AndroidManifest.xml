@@ -19,7 +19,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.SplashActivity" android:theme="@style/AppTheme.Splash" />
         <activity android:name=".data.Trello$LoginActivity" android:theme="@style/LoginTheme" />
 

@@ -185,8 +185,16 @@ object Trello {
             webview.loadUrl(url)
         }
 
+        override fun onBackPressed() {
+            logOut()
+            super.onBackPressed()
+        }
+
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-            android.R.id.home -> consume { finish() }
+            android.R.id.home -> consume {
+                logOut()
+                finish()
+            }
             else -> super.onOptionsItemSelected(item)
         }
 

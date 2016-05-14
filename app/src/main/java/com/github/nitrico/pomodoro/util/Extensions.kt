@@ -5,10 +5,17 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.support.annotation.ArrayRes
+import android.support.annotation.ColorInt
+import android.support.design.widget.Snackbar
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+
 
 val Context.isPortrait: Boolean
     get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -29,6 +36,23 @@ fun Context.stringArrayRes(@ArrayRes arrayResId: Int): Lazy<List<String>> = lazy
     resources.getStringArray(arrayResId).toList()
 }
 
+fun TextView.setTextOrHideView(string: String?) {
+    if (string.isNullOrEmpty()) hide()
+    else {
+        show()
+        text = string
+    }
+}
+
+fun ImageView.load(url: String, circular: Boolean = false) = ImageLoader.load(this, url, circular)
+
+
+
+///// VIEW /////
+
+fun View.show() { visibility = View.VISIBLE }
+fun View.hide() { visibility = View.GONE }
+
 fun View.setMargins(l: Int, t: Int, r: Int, b: Int) {
     if (layoutParams is ViewGroup.MarginLayoutParams) {
         val params = layoutParams as ViewGroup.MarginLayoutParams
@@ -38,11 +62,38 @@ fun View.setMargins(l: Int, t: Int, r: Int, b: Int) {
 }
 
 
-///// SYSTEM BARS /////
 
-fun View.setLightStatusBar() {
-    systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+///// DRAWER LAYOUT /////
+
+fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
+fun DrawerLayout.open() = openDrawer(GravityCompat.START)
+fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
+fun DrawerLayout.toggle() = if (isOpen()) close() else open()
+
+inline fun DrawerLayout.consume(f: () -> Unit): Boolean {
+    f()
+    close()
+    return true
 }
+
+
+
+///// SNACK BAR /////
+
+fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: (Snackbar.() -> Unit)? = null) {
+    val snack = Snackbar.make(this, message, length)
+    if (f != null) snack.f()
+    snack.show()
+}
+
+fun Snackbar.action(action: String, @ColorInt color: Int? = null, listener: (View) -> Unit) {
+    setAction(action, listener)
+    color?.let { setActionTextColor(color) }
+}
+
+
+
+///// SYSTEM BARS /////
 
 
 fun Context.hasNavigationBar(): Boolean {
