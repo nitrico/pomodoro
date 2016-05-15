@@ -6,6 +6,6 @@
         android:id="@+id/add"
         android:icon="@drawable/ic_add"
         android:title="@string/add"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 
 </menu>

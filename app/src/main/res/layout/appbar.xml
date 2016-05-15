@@ -1,0 +1,55 @@
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:elevation="4dp" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:minHeight="?android:attr/actionBarSize"
+        android:layout_marginTop="@dimen/status_bar_height"
+        android:paddingRight="4dp"
+        app:navigationIcon="@drawable/ic_menu"
+        app:contentInsetStart="0dp"
+        app:titleMarginStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="@dimen/margin"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_textSize"
+            android:text="@string/app_name"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+        <!--<android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_half"
+            android:layout_marginRight="@dimen/margin_half"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabTextColor="#7FFF"
+            app:tabSelectedTextColor="@color/white"
+            app:tabIndicatorColor="@color/white" />-->
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tabs_height"
+        app:tabTextColor="#7FFF"
+        app:tabSelectedTextColor="@color/white"
+        app:tabIndicatorColor="@color/white" />
+
+</android.support.design.widget.AppBarLayout>

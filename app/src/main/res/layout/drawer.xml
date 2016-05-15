@@ -1,25 +1,19 @@
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:paddingTop="@dimen/status_bar_height"
-    android:background="?android:windowBackground" >
+    android:background="@color/white"
+    android:orientation="vertical" >
 
-    <LinearLayout
+    <include layout="@layout/drawer_account" />
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="1dp"
+        android:background="@color/divider" />
 
-        <include layout="@layout/drawer_account" />
+    <include layout="@layout/drawer_config" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-        <include layout="@layout/drawer_config" />
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

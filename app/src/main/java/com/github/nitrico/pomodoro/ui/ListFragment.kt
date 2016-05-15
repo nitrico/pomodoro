@@ -11,7 +11,7 @@ import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.util.dp
-import com.github.nitrico.pomodoro.util.getNavigationBarHeight
+import com.github.nitrico.pomodoro.util.navigationBarHeight
 import com.github.nitrico.pomodoro.util.snack
 import io.nlopez.smartadapters.SmartAdapter
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -50,7 +50,7 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
         with(list) {
-            setPadding(8.dp, 8.dp/*+80.dp*/, 8.dp, 8.dp+activity.getNavigationBarHeight())
+            setPadding(8.dp, 8.dp/*+80.dp*/, 8.dp, 8.dp+activity.navigationBarHeight)
             layoutManager = LinearLayoutManager(activity)
         }
         //if (savedInstanceState == null)

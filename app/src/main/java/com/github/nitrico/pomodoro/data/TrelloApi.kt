@@ -1,11 +1,7 @@
 package com.github.nitrico.pomodoro.data
 
 import com.github.nitrico.pomodoro.BuildConfig
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import rx.Observable
 
 interface TrelloApi {
@@ -25,7 +21,6 @@ interface TrelloApi {
             @Query("token") token: String = Trello.token!!,
             @Query("key") key: String = BuildConfig.TRELLO_KEY,
             @Query("lists") lists: String = "open"
-            //@Query("cards") cards: String = "all"
     ): Observable<List<TrelloBoard>>
 
     @GET(VERSION + "/boards/{id}/lists")
@@ -44,13 +39,21 @@ interface TrelloApi {
             @Query("cards") cards: String = "all"
     ): Observable<List<TrelloCard>>
 
-    @PUT(VERSION + "/cards/{cardId}/{listId}")
-    fun moveCardToList(
-            @Path("cardId") cardId: String,
+    @POST(VERSION + "/lists/{listId}/cards")
+    fun addCardToList(
             @Path("listId") listId: String,
+            @Query("name") cardName: String,
+            @Query("desc") cardDesc: String?,
             @Query("token") token: String = Trello.token!!,
             @Query("key") key: String = BuildConfig.TRELLO_KEY
-    ): Observable<Void> // ??? invención mía poco fiable
-    // http://stackoverflow.com/questions/33228126/how-can-i-handle-empty-response-body-with-retrofit-2
+    ): Observable<Any>
+
+    @PUT(VERSION + "/cards/{cardId}")
+    fun moveCardToList(
+            @Path("cardId") cardId: String,
+            @Query("idList") idList: String,
+            @Query("token") token: String = Trello.token!!,
+            @Query("key") key: String = BuildConfig.TRELLO_KEY
+    ): Observable<Any>
 
 }

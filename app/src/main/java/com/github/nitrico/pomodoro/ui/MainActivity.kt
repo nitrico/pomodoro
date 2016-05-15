@@ -1,62 +1,63 @@
 package com.github.nitrico.pomodoro.ui
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v7.widget.AppCompatEditText
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
-import com.bumptech.glide.Glide
-import com.github.nitrico.pomodoro.App
+import android.view.Window
+import com.afollestad.materialdialogs.MaterialDialog
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloMember
 import com.github.nitrico.pomodoro.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.drawer_account.*
 import kotlinx.android.synthetic.main.drawer_config.*
+import org.jetbrains.anko.toast
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        /*if (isPortrait && isKitkatOrHigher) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-        }*/
+
+        // initialize UI
+        setFullScreenLayout()
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        abTitle.setText(R.string.app_name)
-        abTitle.typeface = App.titleTypeface
+        appTitle.typeface = TypefaceCache.mochary
         //fab.setMargins(16.dp, 0, 16.dp, 16.dp + getNavigationBarHeight())
-        setupTabs()
+        initTabs()
 
+        // initialize Trello session
         Trello.addSessionListener(this)
         if (savedInstanceState == null) Trello.init(this)
         else {
             if (Trello.logged) onLogIn()
             else {
                 onLogOut()
-                layout.open()
+                drawer.open()
             }
         }
     }
 
-    private fun setupTabs() {
+    private fun initTabs() {
         pager.adapter = TabsAdapter(supportFragmentManager)
         pager.offscreenPageLimit = 2
-        pager.pageMargin = 16.dp
         tabs.setupWithViewPager(pager)
+        //tabs.setIcons(drawablesFromArrayRes(R.array.icons))
     }
 
     override fun onLogIn() {
         setupAccount(Trello.user)
-        with(sessionButton) {
+        with(connect) {
             setText(R.string.logout)
             setBackgroundResource(R.color.primary)
             setOnClickListener { Trello.logOut() }
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
     override fun onLogOut() {
         setupAccount(null)
-        with(sessionButton) {
+        with(connect) {
             setText(R.string.login)
             setBackgroundResource(R.color.trello)
             setOnClickListener { Trello.init(this@MainActivity) }
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
                 avatar.load(user.avatar!!)
             }
             fullname.text = user.fullName
-            username.text = user.username
+            //username.text = user.username
             email.text = user.email
         }
         else {
@@ -117,15 +118,34 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         return true
     }
 
+    private fun addCard() = MaterialDialog.Builder(this)
+            .title("Add To do")
+            .customView(R.layout.dialog_card, true)
+            .positiveText("Add")
+            .negativeText("Cancel")
+            .negativeColor(R.color.black)
+            .onPositive { dialog, action ->
+                val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text
+                val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text
+                println("New card: " +name +" " +desc)
+                // ADD THE CARD
+            }
+            .show()
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> consume { layout.toggle() }
+        android.R.id.home -> { drawer.toggle(); true }
+        //R.id.timer -> { startActivity(Intent(this, TimerActivity::class.java)); true }
+        R.id.add -> { addCard(); true }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() = if (layout.isOpen()) layout.close() else super.onBackPressed()
+    override fun onBackPressed() {
+        if (drawer.isOpen) drawer.close()
+        else super.onBackPressed()
+    }
 
     private inner class TabsAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
-        private val titles by stringArrayRes(R.array.titles)
+        private val titles: List<String> by stringsFromArrayRes(R.array.titles)
         override fun getCount() = 3
         override fun getPageTitle(position: Int) = titles[position]
         override fun getItem(position: Int)

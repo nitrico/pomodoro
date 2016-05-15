@@ -19,6 +19,10 @@
     <string name="doing_list">Doing list</string>
     <string name="done_list">Done list</string>
 
+    <string name="unselected_board">Select a Trello board</string>
+    <string name="unselected_todo_list">Select a To do list</string>
+    <string name="unselected_doing_list">Select a Doing list</string>
+    <string name="unselected_done_list">Select a Done list</string>
 
     <string name="spinner_board_prompt">Select a board</string>
     <string name="spinner_todo_prompt">Select the Todo list</string>

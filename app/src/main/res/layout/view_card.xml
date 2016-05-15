@@ -1,0 +1,137 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_half"
+    android:foreground="?selectableItemBackground"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardUseCompatPadding="false"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="1.5dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin"
+            android:orientation="vertical" >
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="?colorPrimary"
+                style="@style/HeaderText" />
+            <TextView
+                android:id="@+id/desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="2dp"
+                android:lineSpacingExtra="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/divider" />
+
+        <!--android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="start"
+            android:orientation="horizontal" >
+            <ImageView
+                android:id="@+id/timer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_add_time"
+                android:tint="@color/gray" />
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_edit"
+                android:tint="@color/gray" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/gray" />
+            <ImageView
+                android:id="@+id/open"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:padding="8dp"
+                android:background="?selectableItemBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launch"
+                android:tint="@color/gray" />
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:padding="8dp"
+                    android:gravity="center_vertical"
+                    android:foreground="?selectableItemBackground"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/gray"
+                    android:text="Open" />
+                <TextView
+                    android:id="@+id/start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:padding="8dp"
+                    android:gravity="center_vertical"
+                    android:foreground="?selectableItemBackground"
+                    android:textColor="?colorPrimary"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:text="Start"/>
+            </LinearLayout>-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

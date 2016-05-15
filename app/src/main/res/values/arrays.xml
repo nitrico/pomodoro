@@ -6,4 +6,10 @@
         <item>@string/done</item>
     </string-array>
 
+    <array name="icons">
+        <item>@drawable/ic_todo</item>
+        <item>@drawable/ic_doing</item>
+        <item>@drawable/ic_done</item>
+    </array>
+
 </resources>

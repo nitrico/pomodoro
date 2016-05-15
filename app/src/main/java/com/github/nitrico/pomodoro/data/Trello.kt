@@ -10,7 +10,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.github.nitrico.pomodoro.BuildConfig
 import com.github.nitrico.pomodoro.R
-import com.github.nitrico.pomodoro.util.consume
 import kotlinx.android.synthetic.main.activity_login.*
 import oauth.signpost.basic.DefaultOAuthProvider
 import okhttp3.OkHttpClient
@@ -191,9 +190,10 @@ object Trello {
         }
 
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-            android.R.id.home -> consume {
+            android.R.id.home -> {
                 logOut()
                 finish()
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }

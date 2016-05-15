@@ -1,5 +1,8 @@
 <resources>
 
     <dimen name="status_bar_height">25dp</dimen>
+    <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="tabs_height">48dp</dimen>
+    <dimen name="app_bar_height">129dp</dimen><!--status_bar_height+action_bar_height+tabs_height-->
 
 </resources>

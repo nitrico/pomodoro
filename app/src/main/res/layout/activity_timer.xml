@@ -1,0 +1,69 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:background="?colorPrimary"
+    android:orientation="vertical"
+    tools:context="ui.TimerActivity" >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:minHeight="?android:attr/actionBarSize"
+            android:layout_marginTop="@dimen/status_bar_height"
+            app:navigationIcon="@drawable/ic_close"
+            app:contentInsetStart="0dp"
+            app:titleMarginStart="8dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.github.glomadrian.dashedcircularprogress.DashedCircularProgress
+            android:id="@+id/progress"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerInParent="true"
+            app:external_color="#5FFF"
+            app:base_color="#7FFF"
+            app:progress_color="@color/white"
+            app:min="0"
+            app:max="999" >
+            <!--Put here any view you like to be inside progress bar-->
+        </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="36sp" />
+
+    </RelativeLayout>
+
+    <!--<com.github.nitrico.pomodoro.ui.CircleTimerView
+        android:id="@+id/ctv"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true" />-->
+
+</LinearLayout>
