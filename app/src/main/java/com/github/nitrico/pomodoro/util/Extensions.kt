@@ -21,6 +21,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.nitrico.pomodoro.R
 
+fun consume(f: () -> Unit): Boolean {
+    f()
+    return true
+}
 
 val Int.dp: Int // dip to px conversion
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5).toInt()
@@ -32,7 +36,6 @@ fun Activity.setFullScreenLayout() {
     window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 }
-
 
 
 operator fun TabLayout.get(position: Int): TabLayout.Tab = getTabAt(position)!!

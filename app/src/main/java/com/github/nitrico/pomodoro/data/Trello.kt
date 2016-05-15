@@ -28,28 +28,59 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor
 
 object Trello {
 
-    interface SessionListener {
-        fun onLogIn()
-        fun onLogOut()
+
+    ///// SESSION LISTENER /////
+
+    interface SessionListener { // empty implementations provided to override only desired method
+        fun onLogIn() { }
+        fun onLogOut() { }
     }
 
-    const val URL_BASE = "https://api.trello.com/"
-    const val URL_REQUEST_TOKEN = "https://trello.com/1/OAuthGetRequestToken"
-    const val URL_ACCESS_TOKEN = "https://trello.com/1/OAuthGetAccessToken"
-    const val URL_AUTHORIZE = "https://trello.com/1/OAuthAuthorizeToken?name=Pomodoro&scope=read,write,account"
-    private const val URL_CALLBACK = "com.github.nitrico.pomodoro://trello-callback"
+    private val sessionListeners = mutableListOf<SessionListener>()
+
+    private fun dispatchLogIn()  = sessionListeners.forEach { it.onLogIn()  }
+    private fun dispatchLogOut() = sessionListeners.forEach { it.onLogOut() }
+
+    fun removeSessionListener(listener: SessionListener) = sessionListeners.remove(listener)
+    fun addSessionListener(listener: SessionListener) {
+        if (!sessionListeners.contains(listener)) sessionListeners.add(listener)
+    }
+
+
+    ///// CONTENT LISTENER /////
+
+    interface ContentListener { // empty implementations provided to override only desired method
+        fun onTodoListChanged() { }
+        fun onDoingListChanged() { }
+        fun onDoneListChanged() { }
+    }
+
+    private val contentListeners = mutableListOf<ContentListener>()
+
+    private fun dispatchTodoListUpdate()  = contentListeners.forEach { it.onTodoListChanged()  }
+    private fun dispatchDoingListUpdate() = contentListeners.forEach { it.onDoingListChanged() }
+    private fun dispatchDoneListUpdate()  = contentListeners.forEach { it.onDoneListChanged()  }
+
+    fun removeContentListener(listener: ContentListener) = contentListeners.remove(listener)
+    fun addContentListener(listener: ContentListener) {
+        if (!contentListeners.contains(listener)) contentListeners.add(listener)
+    }
+
+
+
+    private const val CALLBACK_URL = "com.github.nitrico.pomodoro://trello-callback"
     private const val KEY_LOGIN_URL = "KEY_LOGIN_URL"
     private const val KEY_TOKEN = "KEY_TOKEN"
     private const val KEY_TOKEN_SECRET = "KEY_TOKEN_SECRET"
 
-    private lateinit var context: Context
-    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
-
     private val consumer = OkHttpOAuthConsumer(BuildConfig.TRELLO_KEY, BuildConfig.TRELLO_SECRET)
-    private val provider = DefaultOAuthProvider(URL_REQUEST_TOKEN, URL_ACCESS_TOKEN, URL_AUTHORIZE)
+    private val provider = DefaultOAuthProvider(
+            "https://trello.com/1/OAuthGetRequestToken",
+            "https://trello.com/1/OAuthGetAccessToken",
+            "https://trello.com/1/OAuthAuthorizeToken?name=Pomodoro&scope=read,write,account")
 
-    internal val api = Retrofit.Builder()
-            .baseUrl(URL_BASE)
+    private val api = Retrofit.Builder()
+            .baseUrl("https://api.trello.com/")
             .client(OkHttpClient.Builder()
                     .addInterceptor(SigningInterceptor(consumer))
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE))
@@ -59,14 +90,18 @@ object Trello {
             .build()
             .create(TrelloApi::class.java)
 
-    internal var tokenSecret: String? = null
-        private set
-    internal var token: String? = null
+    private lateinit var context: Context
+    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+
+    private var tokenSecret: String? = null
+
+    var token: String? = null
         private set
     var logged = false
         private set
     var user: TrelloMember? = null
         private set
+
     /*
     var boards: List<TrelloBoard> = emptyList()
         private set
@@ -80,21 +115,20 @@ object Trello {
         private set
     */
 
-    var boardId: String? = "5733f00584deae6ac11ac64b"
     var todoListId: String? = "5733f00584deae6ac11ac64c"
+    var todoCards: List<TrelloCard> = emptyList()
+        private set
+
     var doingListId: String? = "5733f00584deae6ac11ac64d"
+    var doingCards: List<TrelloCard> = emptyList()
+        private set
+
     var doneListId: String? = "5733f00584deae6ac11ac64e"
+    var doneCards: List<TrelloCard> = emptyList()
+        private set
+
+    var boardId: String? = "5733f00584deae6ac11ac64b"
     val listIds = listOf(todoListId, doingListId, doneListId)
-
-    private val listeners = mutableListOf<SessionListener>()
-
-    fun addSessionListener(listener: SessionListener) {
-        if (!listeners.contains(listener)) listeners.add(listener)
-    }
-    fun removeSessionListener(listener: SessionListener) = listeners.remove(listener)
-
-    private fun dispatchLogIn() = listeners.forEach { it.onLogIn() }
-    private fun dispatchLogOut() = listeners.forEach { it.onLogOut() }
 
     fun init(context: Context) {
         this.context = context
@@ -105,9 +139,13 @@ object Trello {
             consumer.setTokenWithSecret(token, tokenSecret)
             uiThread { finishLogIn() }
         }
-        else async() {
-            val url = provider.retrieveRequestToken(consumer, URL_CALLBACK)
-            uiThread { context.startActivity<LoginActivity>(KEY_LOGIN_URL to url) }
+    }
+
+    fun logIn(context: Context) {
+        this.context = context
+        async() {
+            val url = Trello.provider.retrieveRequestToken(Trello.consumer, Trello.CALLBACK_URL)
+            uiThread { context.startActivity<LoginActivity>(Trello.KEY_LOGIN_URL to url) }
         }
     }
 
@@ -127,7 +165,6 @@ object Trello {
                     user = it
                     if (user != null) {
                         //context.toast(user!!.username + " logged in")
-                        println(user!!.email +" " +user!!.fullName)
                     }
                     dispatchLogIn() // notify listeners
                 },{
@@ -148,6 +185,46 @@ object Trello {
         dispatchLogOut() // notify listeners
     }
 
+    fun addTodo(name: String, desc: String?) {
+        // CHECK ALL REQUERIMENTS
+        // CHECK logged
+        // CHECK todoListId != null
+        api.addCardToList(todoListId!!, name, desc)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    dispatchTodoListUpdate()
+                },{
+                    context.toast(it.message ?: "Unknown error when adding a to do")
+                })
+    }
+
+    fun getListCards(listId: String?, callback: ((List<TrelloCard>) -> Unit)?) {
+        // CHECKS
+        if (!logged || token == null) return
+        api.getListCards(listId!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    when (listId) {
+                        todoListId -> todoCards = it
+                        doingListId -> doingCards = it
+                        doneListId -> doneCards = it
+                    }
+                    callback?.invoke(it)
+                },{
+                    context.toast(it.message ?: "Unknown error getting list cards")
+                })
+    }
+
+    fun getTodoCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(todoListId, callback)
+    fun getDoingCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(doingListId, callback)
+    fun getDoneCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(doneListId, callback)
+
+    fun updateCard(cardId: String) { }
+    fun removeCard(cardId: String) { }
+    fun moveCardToList(cardId: String, listId: String) { }
+
 
     /**
      * Activity consisting on a WebView used to perform the user login
@@ -166,7 +243,7 @@ object Trello {
             // custom WebViewClient to handle callback url and its params
             webview.setWebViewClient(object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    if (url.startsWith(URL_CALLBACK)) {
+                    if (url.startsWith(CALLBACK_URL)) {
                         val verifier = Uri.parse(url).getQueryParameter("oauth_verifier")
                         async() {
                             provider.retrieveAccessToken(consumer, verifier)
@@ -185,13 +262,13 @@ object Trello {
         }
 
         override fun onBackPressed() {
-            logOut()
+            if (!logged) logOut()
             super.onBackPressed()
         }
 
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
             android.R.id.home -> {
-                logOut()
+                if (!logged) logOut()
                 finish()
                 true
             }

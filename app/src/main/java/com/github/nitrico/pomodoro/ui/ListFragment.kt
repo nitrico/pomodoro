@@ -12,17 +12,13 @@ import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.util.dp
 import com.github.nitrico.pomodoro.util.navigationBarHeight
-import com.github.nitrico.pomodoro.util.snack
 import io.nlopez.smartadapters.SmartAdapter
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.jetbrains.anko.support.v4.withArguments
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
-        const val KEY_NULL_LIST = "KEY_NULL_LIST"
         const val KEY_LIST_ID = "KEY_LIST_ID"
         const val KEY_IS_TODO = "KEY_IS_TODO"
         fun newInstance(listId: String, isTodoList: Boolean = false)
@@ -30,14 +26,16 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private lateinit var listId: String
+    private var isTodoList: Boolean = false
+    private var items: List<TrelloCard> = emptyList()
 
-    private val adapter by lazy { SmartAdapter.empty()
-            .map(TrelloCard::class.java, TrelloCardView::class.java)
-            .into(list)
+    private val adapter by lazy {
+        SmartAdapter.empty().map(TrelloCard::class.java, TrelloCardView::class.java).into(list)
     }
 
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
-        listId = arguments.getString(KEY_LIST_ID)
+        listId = arguments.getString(KEY_LIST_ID, null)
+        isTodoList = arguments.getBoolean(KEY_IS_TODO, false)
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
@@ -45,30 +43,24 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         super.onActivityCreated(savedInstanceState)
         with(layout) {
             setOnRefreshListener(this@ListFragment)
-            //setProgressViewOffset(true, 8.dp, (80+24).dp)
             setColorSchemeResources(android.R.color.white)
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
         with(list) {
-            setPadding(8.dp, 8.dp/*+80.dp*/, 8.dp, 8.dp+activity.navigationBarHeight)
+            setPadding(8.dp, 8.dp, 8.dp, 8.dp+activity.navigationBarHeight)
             layoutManager = LinearLayoutManager(activity)
         }
-        //if (savedInstanceState == null)
-            onRefresh()
+        if (savedInstanceState == null) onRefresh()
+        else adapter.setItems(Trello.todoCards)
     }
 
     override fun onRefresh() {
-        if (Trello.logged) Trello.api.getListCards(listId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    adapter.clearItems()
-                    adapter.addItems(it)
-                    layout.isRefreshing = false
-                },{
-                    layout.snack(it.message ?: "Unknown error")
-                })
-        else layout.isRefreshing = false
+        Trello.getListCards(listId) {
+            items = it
+            adapter.clearItems()
+            adapter.addItems(items)
+            layout.isRefreshing = false
+        }
     }
 
 }

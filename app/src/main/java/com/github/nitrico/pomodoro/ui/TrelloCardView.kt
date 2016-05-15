@@ -45,7 +45,7 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
                     .title("Edit card")
                     .customView(view, true)
                     .positiveText("Save")
-                    .neutralText("Cancel")
+                    .negativeText("Cancel")
                     .negativeColor(R.color.black)
                     .onPositive { dialog, action ->
                         val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text

@@ -1,6 +1,5 @@
 package com.github.nitrico.pomodoro.ui
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -18,9 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.drawer_account.*
 import kotlinx.android.synthetic.main.drawer_config.*
-import org.jetbrains.anko.toast
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
@@ -33,26 +29,25 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         setFullScreenLayout()
         setSupportActionBar(toolbar)
         appTitle.typeface = TypefaceCache.mochary
-        //fab.setMargins(16.dp, 0, 16.dp, 16.dp + getNavigationBarHeight())
-        initTabs()
-
-        // initialize Trello session
-        Trello.addSessionListener(this)
-        if (savedInstanceState == null) Trello.init(this)
-        else {
-            if (Trello.logged) onLogIn()
-            else {
-                onLogOut()
-                drawer.open()
-            }
-        }
-    }
-
-    private fun initTabs() {
         pager.adapter = TabsAdapter(supportFragmentManager)
         pager.offscreenPageLimit = 2
         tabs.setupWithViewPager(pager)
         //tabs.setIcons(drawablesFromArrayRes(R.array.icons))
+
+        // initialize Trello session
+        Trello.init(this)
+        if (Trello.logged) onLogIn()
+        else onLogOut()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Trello.addSessionListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Trello.removeSessionListener(this)
     }
 
     override fun onLogIn() {
@@ -76,7 +71,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         with(connect) {
             setText(R.string.login)
             setBackgroundResource(R.color.trello)
-            setOnClickListener { Trello.init(this@MainActivity) }
+            setOnClickListener { Trello.logIn(this@MainActivity) }
         }
         //account.hide()
         board.isEnabled = false
@@ -125,16 +120,14 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
             .negativeText("Cancel")
             .negativeColor(R.color.black)
             .onPositive { dialog, action ->
-                val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text
-                val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text
-                println("New card: " +name +" " +desc)
-                // ADD THE CARD
+                val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text.toString()
+                val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text.toString()
+                Trello.addTodo(name, desc)
             }
             .show()
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> { drawer.toggle(); true }
-        //R.id.timer -> { startActivity(Intent(this, TimerActivity::class.java)); true }
         R.id.add -> { addCard(); true }
         else -> super.onOptionsItemSelected(item)
     }
