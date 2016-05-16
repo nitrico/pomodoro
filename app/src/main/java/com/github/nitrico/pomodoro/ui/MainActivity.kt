@@ -4,21 +4,25 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v7.widget.AppCompatEditText
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
-import com.afollestad.materialdialogs.MaterialDialog
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
+import com.github.nitrico.pomodoro.data.TrelloList
 import com.github.nitrico.pomodoro.data.TrelloMember
-import com.github.nitrico.pomodoro.util.*
+import com.github.nitrico.pomodoro.tool.*
+import com.thesurix.gesturerecycler.GestureAdapter
+import com.thesurix.gesturerecycler.GestureManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.drawer_account.*
-import kotlinx.android.synthetic.main.drawer_config.*
 
 class MainActivity : AppCompatActivity(), Trello.SessionListener {
+
+    private lateinit var drawerAdapter: DrawerListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -28,11 +32,20 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         // initialize UI
         setFullScreenLayout()
         setSupportActionBar(toolbar)
-        appTitle.typeface = TypefaceCache.mochary
+        appTitle.typeface = App.mocharyTypeface
         pager.adapter = TabsAdapter(supportFragmentManager)
         pager.offscreenPageLimit = 2
         tabs.setupWithViewPager(pager)
         //tabs.setIcons(drawablesFromArrayRes(R.array.icons))
+
+        drawerList.layoutManager = LinearLayoutManager(this)
+        drawerAdapter = DrawerListAdapter()
+        drawerAdapter.setDataChangeListener(object : GestureAdapter.OnDataChangeListener<TrelloList> {
+            override fun onItemReorder(item: TrelloList, fromPos: Int, toPos: Int) { }
+            override fun onItemRemoved(item: TrelloList, position: Int) { }
+        })
+        drawerList.adapter = drawerAdapter
+        GestureManager.Builder(drawerList).setLongPressDragEnabled(true).build()
 
         // initialize Trello session
         Trello.init(this)
@@ -61,9 +74,14 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
             isEnabled = true
             boardHeader.isEnabled = true
             boardName.isEnabled = true
-            setOnClickListener {  }
+            setOnClickListener {
+                DialogCreator.chooseBoard(this@MainActivity) {
+                    boardName.text = it.name
+                    Trello.boardId = it.id
+                }
+            }
         }
-        enableLists(false)
+        drawerAdapter.data = Trello.lists
     }
 
     override fun onLogOut() {
@@ -73,10 +91,6 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
             setBackgroundResource(R.color.trello)
             setOnClickListener { Trello.logIn(this@MainActivity) }
         }
-        //account.hide()
-        board.isEnabled = false
-        boardHeader.isEnabled = false
-        boardName.isEnabled = false
     }
 
     private fun setupAccount(user: TrelloMember?) {
@@ -96,39 +110,14 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         }
     }
 
-    private fun enableLists(enable: Boolean) {
-        todoList.isEnabled = enable
-        doingList.isEnabled = enable
-        doneList.isEnabled = enable
-        todoHeader.isEnabled = enable
-        doingHeader.isEnabled = enable
-        doneHeader.isEnabled = enable
-        todoListName.isEnabled = enable
-        doingListName.isEnabled = enable
-        doneListName.isEnabled = enable
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
-    private fun addCard() = MaterialDialog.Builder(this)
-            .title("Add To do")
-            .customView(R.layout.dialog_card, true)
-            .positiveText("Add")
-            .negativeText("Cancel")
-            .negativeColor(R.color.black)
-            .onPositive { dialog, action ->
-                val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text.toString()
-                val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text.toString()
-                Trello.addTodo(name, desc)
-            }
-            .show()
-
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> { drawer.toggle(); true }
-        R.id.add -> { addCard(); true }
+        R.id.add -> { DialogCreator.addTodo(this); true }
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -141,8 +130,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         private val titles: List<String> by stringsFromArrayRes(R.array.titles)
         override fun getCount() = 3
         override fun getPageTitle(position: Int) = titles[position]
-        override fun getItem(position: Int)
-                = ListFragment.newInstance(Trello.listIds[position]!!, position == 0)
+        override fun getItem(position: Int) = ListFragment.newInstance(position)
     }
 
 }

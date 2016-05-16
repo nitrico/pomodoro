@@ -1,4 +1,4 @@
-package com.github.nitrico.pomodoro.util
+package com.github.nitrico.pomodoro.tool
 
 import android.app.Activity
 import android.content.Context

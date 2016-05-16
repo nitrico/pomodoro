@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Window
 import com.github.nitrico.pomodoro.R
-import com.github.nitrico.pomodoro.util.navigationBarHeight
-import com.github.nitrico.pomodoro.util.navigationBarWidth
+import com.github.nitrico.pomodoro.tool.navigationBarHeight
+import com.github.nitrico.pomodoro.tool.navigationBarWidth
 import kotlinx.android.synthetic.main.activity_timer.*
 
 class TimerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
         setSupportActionBar(toolbar)

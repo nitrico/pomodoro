@@ -20,7 +20,8 @@ interface TrelloApi {
     fun getBoards(
             @Query("token") token: String = Trello.token!!,
             @Query("key") key: String = BuildConfig.TRELLO_KEY,
-            @Query("lists") lists: String = "open"
+            @Query("lists") lists: String = "open",
+            @Query("cards") cards: String = "all"
     ): Observable<List<TrelloBoard>>
 
     @GET(VERSION + "/boards/{id}/lists")

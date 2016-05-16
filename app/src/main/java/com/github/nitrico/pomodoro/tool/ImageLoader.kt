@@ -1,4 +1,4 @@
-package com.github.nitrico.pomodoro.util
+package com.github.nitrico.pomodoro.tool
 
 import android.graphics.Bitmap
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
