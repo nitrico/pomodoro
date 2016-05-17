@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="?android:textColorPrimary"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:ellipsize="end" />
 
     <View
         android:id="@+id/draggable"
@@ -26,8 +27,10 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_menu"
-        android:tint="@color/gray" />
+        android:tint="#E2E2E2"
+        android:contentDescription="@string/desc_ic_drag" />
 
 </RelativeLayout>

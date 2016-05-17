@@ -23,29 +23,25 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
         desc.setTextOrHideView(card.desc)
 
         if (card.pomodoros != 0 || card.seconds != 0.toLong()) {
-            pomodoros.show()
-            seconds.show()
+            data.show()
             pomodoros.text = card.pomodoros.toString()
-            seconds.text = card.seconds.toString()
+            seconds.text = card.seconds.toString() +"s"
         }
-        else {
-            pomodoros.hide()
-            seconds.hide()
-        }
+        else data.hide()
 
         // click listeners
         open.setOnClickListener { openCard(card) }
         edit.setOnClickListener { DialogCreator.editCard(context, card) }
-        delete.setOnClickListener { DialogCreator.deleteCard(context, card) }
-        comment.setOnClickListener { DialogCreator.addComment(context, card) }
+        //delete.setOnClickListener { DialogCreator.deleteCard(context, card) }
+        //comment.setOnClickListener { DialogCreator.addComment(context, card) }
         timer.setOnClickListener {
             context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to card)
         }
 
         open.setOnLongClickListener { context.toast(R.string.open_card); true }
         edit.setOnLongClickListener { context.toast(R.string.edit_card); true }
-        delete.setOnLongClickListener { context.toast(R.string.delete_card); true }
-        comment.setOnLongClickListener { context.toast(R.string.add_comment); true }
+        //delete.setOnLongClickListener { context.toast(R.string.delete_card); true }
+        //comment.setOnLongClickListener { context.toast(R.string.add_comment); true }
         // timer.setOnLongClickListener { context.toast(""); true }
     }
 

@@ -32,20 +32,23 @@
                 android:id="@+id/fullname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/HeaderText" />
             <!--<TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?android:textColorPrimary"
-                android:maxLines="1" />-->
+                android:maxLines="1"
+                android:ellipsize="end" />-->
             <TextView
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?android:textColorPrimary"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:ellipsize="end" />
         </LinearLayout>
 
         <TextView
@@ -58,7 +61,9 @@
             android:background="?colorPrimary"
             android:foreground="?selectableItemBackground"
             android:textColor="@color/white"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </LinearLayout>
 

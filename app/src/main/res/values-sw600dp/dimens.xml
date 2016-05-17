@@ -1,0 +1,10 @@
+<resources>
+
+    <bool name="tablet">true</bool>
+
+    <dimen name="status_bar_height">0dp</dimen>
+    <dimen name="action_bar_height">64dp</dimen>
+    <dimen name="tabs_height">0dp</dimen>
+    <dimen name="app_bar_height">64dp</dimen><!--status_bar_height+action_bar_height+tabs_height-->
+
+</resources>

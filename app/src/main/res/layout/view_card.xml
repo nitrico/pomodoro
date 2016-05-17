@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin"
-            android:layout_marginBottom="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:orientation="vertical" >
             <TextView
                 android:id="@+id/name"
@@ -29,19 +30,11 @@
                 android:textColor="?colorPrimary"
                 style="@style/HeaderText" />
             <TextView
-                android:id="@+id/pomodoros"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/seconds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="2dp"
+                android:layout_marginBottom="4dp"
                 android:lineSpacingExtra="2dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/grayDark" />
@@ -49,36 +42,84 @@
 
         <include layout="@layout/divider" />
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:gravity="start"
-            android:orientation="horizontal" >
-            <ImageView
-                android:id="@+id/timer"
-                android:src="@drawable/ic_timer"
-                style="@style/CardButton" />
-            <ImageView
-                android:id="@+id/comment"
-                android:src="@drawable/ic_comment"
-                style="@style/CardButton" />
-            <ImageView
-                android:id="@+id/edit"
-                android:src="@drawable/ic_edit"
-                style="@style/CardButton" />
-            <ImageView
-                android:id="@+id/delete"
-                android:src="@drawable/ic_delete"
-                style="@style/CardButton" />
-            <ImageView
-                android:id="@+id/open"
-                android:src="@drawable/ic_launch"
-                style="@style/CardButton" />
-        </LinearLayout>
+            android:background="#07000000" >
+            <LinearLayout
+                android:id="@+id/data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal" >
+                <ImageView
+                    android:id="@+id/secondsIcon"
+                    android:src="@drawable/ic_time"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="4dp" />
+                <TextView
+                    android:id="@+id/seconds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="monospace"
+                    android:textColor="#FFBBBBBB"
+                    android:textSize="15sp" />
+                <ImageView
+                    android:id="@+id/pomodorosIcon"
+                    android:src="@drawable/ic_pomodoro"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp" />
+                <TextView
+                    android:id="@+id/pomodoros"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="monospace"
+                    android:textColor="#FFBBBBBB"
+                    android:textSize="15sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:gravity="end"
+                android:orientation="horizontal" >
+                <ImageView
+                    android:id="@+id/timer"
+                    android:src="@drawable/ic_timer"
+                    style="@style/CardButton" />
+                <!--<ImageView
+                    android:id="@+id/comment"
+                    android:src="@drawable/ic_comment"
+                    style="@style/CardButton" />
+                    <ImageView
+                    android:id="@+id/delete"
+                    android:src="@drawable/ic_delete"
+                    style="@style/CardButton" />-->
+                <ImageView
+                    android:id="@+id/edit"
+                    android:src="@drawable/ic_edit"
+                    style="@style/CardButton" />
+
+                <ImageView
+                    android:id="@+id/open"
+                    android:src="@drawable/ic_launch"
+                    style="@style/CardButton" />
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

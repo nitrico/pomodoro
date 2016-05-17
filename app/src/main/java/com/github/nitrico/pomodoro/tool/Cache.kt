@@ -2,13 +2,12 @@ package com.github.nitrico.pomodoro.tool
 
 import android.content.Context
 import android.preference.PreferenceManager
-import java.io.Serializable
 
 object Cache {
 
     private const val JSON = "JSON"
 
-    class CardTime : Serializable {
+    class CardTime {
         val id: String
         var pomodoros: Int
         var seconds: Long

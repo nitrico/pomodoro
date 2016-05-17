@@ -1,15 +1,16 @@
 <resources>
 
-    <color name="primary">#C62828</color>
-    <color name="primaryDark">#B71C1C</color>
+    <color name="primary">@color/red</color>
     <color name="accent">@color/primary</color>
     <color name="primaryText">@color/grayDark</color>
     <color name="secondaryText">#727272</color>
     <color name="divider">#D8D8D8</color> <!-- #4FFF #E2E2E2 -->
     <color name="statusBar">#1D000000</color>
-    <color name="windowBackground">#F0F0F0</color>
+    <color name="windowBackground">#EDEDED</color>
 
+    <color name="red">#C62828 </color>
     <color name="trello">#026AA7</color>
+    <color name="blackTrans">#67000000</color>
     <color name="black">@android:color/black</color>
     <color name="grayDark">#FF555555</color>
     <color name="gray">#CCC</color>

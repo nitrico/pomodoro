@@ -1,5 +1,6 @@
 package com.github.nitrico.pomodoro.ui
 
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         //drawer.getOverlay().add(DesignSpec.fromResource(drawer, R.raw.spec))
 
         // initialize UI
+        if (Build.VERSION.SDK_INT >= 21) window.statusBarColor = resources.getColor(R.color.statusBar)
         setFullScreenLayout()
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)

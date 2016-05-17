@@ -36,5 +36,6 @@
     <string name="unused">Unused</string>
 
     <string name="desc_user_avatar">User avatar</string>
+    <string name="desc_ic_drag">Drag icon</string>
 
 </resources>

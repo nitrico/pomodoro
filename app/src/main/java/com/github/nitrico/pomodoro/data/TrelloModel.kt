@@ -23,9 +23,11 @@ class TrelloCard(
         val desc: String,
         val url: String) : TrelloItem {
 
-    val pomodoros: Int get() = Cache.getPomodoros(id)
-    val seconds: Long get() = Cache.getSeconds(id)
+    val pomodoros: Int
+        get() = Cache.getPomodoros(id)
 
+    val seconds: Long
+        get() = Cache.getSeconds(id)
 }
 
 class TrelloMember(
@@ -40,5 +42,4 @@ class TrelloMember(
             if (avatarHash == null) return null
             return "https://trello-avatars.s3.amazonaws.com/$avatarHash/170.png"
         }
-
 }

@@ -31,6 +31,12 @@ fun consume(f: () -> Unit): Boolean {
 val Int.dp: Int // dip to px conversion
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5).toInt()
 
+val Context.isKitkatOrHigher: Boolean
+    get() = Build.VERSION.SDK_INT >= 19
+
+val Context.isLollipopOrHigher: Boolean
+    get() = Build.VERSION.SDK_INT >= 21
+
 val Context.isPortrait: Boolean
     get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 

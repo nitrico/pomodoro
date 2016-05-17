@@ -1,5 +1,8 @@
 <resources>
 
+    <bool name="portrait">true</bool>
+    <bool name="table">false</bool>
+
     <dimen name="status_bar_height">0dp</dimen>
     <dimen name="action_bar_height">56dp</dimen>
     <dimen name="tabs_height">48dp</dimen>
@@ -10,9 +13,5 @@
 
     <dimen name="title_textSize">40sp</dimen>
     <dimen name="avatar_size">120dp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
 
 </resources>

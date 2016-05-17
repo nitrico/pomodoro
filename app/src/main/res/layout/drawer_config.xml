@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerConfig"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +22,10 @@
             android:layout_marginRight="16dp"
             android:gravity="end|center_vertical"
             android:text="@string/board"
-            style="@style/HeaderText" />
+            android:maxLines="1"
+            android:ellipsize="end"
+            style="@style/HeaderText"
+            tools:ignore="RtlHardcoded" />
         <TextView
             android:id="@+id/boardName"
             android:layout_width="wrap_content"
@@ -29,7 +33,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="@dimen/margin"
             android:textColor="@color/text"
-            android:text="@string/select_board" />
+            android:text="@string/select_board"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:ignore="RtlHardcoded" />
     </LinearLayout>
 
     <include layout="@layout/divider" />
@@ -46,13 +53,16 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            tools:ignore="RtlHardcoded" >
             <TextView
                 android:id="@+id/todoHeader"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="end|center_vertical"
                 android:text="@string/todo_list"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/HeaderText" />
             <TextView
                 android:id="@+id/doingHeader"
@@ -60,6 +70,8 @@
                 android:layout_height="48dp"
                 android:gravity="end|center_vertical"
                 android:text="@string/doing_list"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/HeaderText" />
             <TextView
                 android:id="@+id/doneHeader"
@@ -67,6 +79,8 @@
                 android:layout_height="48dp"
                 android:gravity="end|center_vertical"
                 android:text="@string/done_list"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/HeaderText" />
             <TextView
                 android:id="@+id/unusedHeader"
@@ -75,6 +89,8 @@
                 android:gravity="end|center_vertical"
                 android:textColor="@android:color/darker_gray"
                 android:text="@string/unused"
+                android:maxLines="1"
+                android:ellipsize="end"
                 style="@style/HeaderText" />
         </LinearLayout>
 
