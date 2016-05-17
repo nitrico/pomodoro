@@ -2,6 +2,7 @@ package com.github.nitrico.pomodoro.tool
 
 import android.app.Application
 import android.graphics.Typeface
+import com.github.nitrico.pomodoro.data.Data
 
 class App : Application() {
 
@@ -12,6 +13,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         mocharyTypeface = Typeface.createFromAsset(assets, "fonts/Mochary.ttf")
+        Data.init(this)
     }
 
 }

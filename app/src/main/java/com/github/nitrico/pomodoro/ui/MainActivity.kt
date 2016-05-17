@@ -56,8 +56,7 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
         // initialize Trello session
         Trello.init(this)
-        if (Trello.logged) onLogIn()
-        else onLogOut()
+        if (Trello.logged) onLogIn() else onLogOut()
     }
 
     private fun setupTabs() {

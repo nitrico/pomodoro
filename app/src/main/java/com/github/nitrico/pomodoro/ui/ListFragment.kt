@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.dp
+import com.github.nitrico.pomodoro.tool.isPortrait
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
 import io.nlopez.smartadapters.SmartAdapter
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -41,7 +43,8 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         // initialize UI
         with(list) {
             setPadding(8.dp, 8.dp, 8.dp, 8.dp+activity.navigationBarHeight)
-            layoutManager = LinearLayoutManager(activity)
+            if (activity.isPortrait) layoutManager = LinearLayoutManager(activity)
+            else layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
         with(layout) {
             setOnRefreshListener(this@ListFragment)

@@ -20,8 +20,12 @@ class TrelloCard(
         override val id: String,
         val name: String,
         val desc: String,
-        val due: String,
-        val url: String) : TrelloItem
+        val url: String) : TrelloItem {
+
+    val pomodoros: Int get() = Data.getPomodoros(id)
+    val seconds: Long get() = Data.getSeconds(id)
+
+}
 
 class TrelloMember(
         override val id: String,

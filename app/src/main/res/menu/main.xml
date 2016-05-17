@@ -5,13 +5,7 @@
     <item
         android:id="@+id/add"
         android:icon="@drawable/ic_add"
-        android:title="@string/add"
+        android:title="@string/add_todo"
         app:showAsAction="always" />
-
-    <!--<item
-        android:id="@+id/account"
-        android:icon="@drawable/ic_account"
-        android:title="Account"
-        app:showAsAction="always" />-->
 
 </menu>

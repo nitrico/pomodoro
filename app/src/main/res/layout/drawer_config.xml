@@ -29,7 +29,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="@dimen/margin"
             android:textColor="@color/text"
-            android:text="@string/unselected_board" />
+            android:text="@string/select_board" />
     </LinearLayout>
 
     <include layout="@layout/divider" />
@@ -74,7 +74,7 @@
                 android:layout_height="48dp"
                 android:gravity="end|center_vertical"
                 android:textColor="@android:color/darker_gray"
-                android:text="@string/unused_lists"
+                android:text="@string/unused"
                 style="@style/HeaderText" />
         </LinearLayout>
 

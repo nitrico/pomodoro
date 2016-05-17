@@ -24,33 +24,28 @@
 
         <TextView
             android:id="@+id/appTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/margin_half"
             android:paddingRight="@dimen/margin"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/title_textSize"
             android:text="@string/app_name"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
-        <!--<android.support.design.widget.TabLayout
+
+        <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_half"
             android:layout_marginRight="@dimen/margin_half"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
+            app:tabMode="scrollable"
+            app:tabGravity="center"
             app:tabTextColor="#7FFF"
             app:tabSelectedTextColor="@color/white"
-            app:tabIndicatorColor="@color/white" />-->
-    </android.support.v7.widget.Toolbar>
+            app:tabIndicatorColor="@color/white" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/tabs_height"
-        app:tabTextColor="@color/whiteTrans"
-        app:tabSelectedTextColor="@color/white"
-        app:tabIndicatorColor="@color/white" />
+    </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>

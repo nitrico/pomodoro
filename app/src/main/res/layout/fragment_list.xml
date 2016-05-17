@@ -8,8 +8,8 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
-        android:clipToPadding="false" />
+        android:scrollbarStyle="outsideOverlay" />
 
 </android.support.v4.widget.SwipeRefreshLayout>

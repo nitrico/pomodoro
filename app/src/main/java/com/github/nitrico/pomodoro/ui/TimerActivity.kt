@@ -12,6 +12,7 @@ import android.support.v7.app.NotificationCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.github.nitrico.pomodoro.R
+import com.github.nitrico.pomodoro.data.Data
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.TimerService
 import com.github.nitrico.pomodoro.tool.consume
@@ -27,6 +28,7 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private var card: TrelloCard? = null
+    private var currentSeconds: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +49,8 @@ class TimerActivity : AppCompatActivity() {
         val timer = object : CountDownTimer(seconds * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
-                val value = (seconds - secondsLeft).toFloat()
+                currentSeconds = seconds - secondsLeft
+                val value = currentSeconds.toFloat()
                 val timeString = secondsLeft.toTimeString()
                 progress.setValue(value)
                 text.text = timeString
@@ -85,11 +88,23 @@ class TimerActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> consume { finish() }
+        android.R.id.home -> consume { exit() }
         R.id.start25m -> consume { startTimer(25*60 +1) }
         R.id.start5m -> consume { startTimer(5*60 +1) }
         else -> super.onOptionsItemSelected(item)
     }
+
+    override fun onBackPressed() {
+        exit()
+        super.onBackPressed()
+    }
+
+    private fun exit() = card?.let {
+        println("add $currentSeconds to card ${it.id}")
+        if (currentSeconds != 0.toLong()) Data.addTime(it.id, currentSeconds)
+        finish()
+    }
+
 
     private fun createNotification(text: String, max: Int, progress: Int) {
         val builder = NotificationCompat.Builder(this)
