@@ -11,12 +11,12 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        toast("TimerService.onCreate")
+        //toast("TimerService onCreate")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        toast("TimerService.onDestroy")
+        //toast("TimerService onDestroy")
     }
 
 }

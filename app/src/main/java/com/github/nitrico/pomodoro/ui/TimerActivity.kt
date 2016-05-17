@@ -12,7 +12,7 @@ import android.support.v7.app.NotificationCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.github.nitrico.pomodoro.R
-import com.github.nitrico.pomodoro.data.Data
+import com.github.nitrico.pomodoro.tool.Cache
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.TimerService
 import com.github.nitrico.pomodoro.tool.consume
@@ -28,7 +28,11 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private var card: TrelloCard? = null
+    private var timer: CountDownTimer? = null
     private var currentSeconds: Long = 0
+    private val notificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +50,7 @@ class TimerActivity : AppCompatActivity() {
     private fun startTimer(seconds: Long) {
         progress.max = seconds - 0.5f
         progress.setValue(0f)
-        val timer = object : CountDownTimer(seconds * 1000, 1000) {
+        timer = object : CountDownTimer(seconds * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
                 currentSeconds = seconds - secondsLeft
@@ -60,14 +64,13 @@ class TimerActivity : AppCompatActivity() {
                 progress.setValue(progress.max)
                 text.text = "finished!"
                 // cancel the notification
-                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                nm.cancel(NOTIFICATION_ID)
+                notificationManager.cancel(NOTIFICATION_ID)
                 // stopService(...) ??
                 // lanzar una notificación nueva con sonido ??
             }
         }
-        timer.cancel()
-        timer.start()
+        timer?.cancel()
+        timer?.start()
         startService(Intent(this, TimerService::class.java))
     }
 
@@ -94,17 +97,14 @@ class TimerActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() {
-        exit()
-        super.onBackPressed()
-    }
+    override fun onBackPressed() = exit()
 
-    private fun exit() = card?.let {
-        println("add $currentSeconds to card ${it.id}")
-        if (currentSeconds != 0.toLong()) Data.addTime(it.id, currentSeconds)
+    private fun exit() {
+        timer?.cancel()
+        notificationManager.cancel(NOTIFICATION_ID)
+        card?.let { if (currentSeconds != 0.toLong()) Cache.addTime(it.id, currentSeconds) }
         finish()
     }
-
 
     private fun createNotification(text: String, max: Int, progress: Int) {
         val builder = NotificationCompat.Builder(this)
@@ -119,7 +119,6 @@ class TimerActivity : AppCompatActivity() {
                 //.setLargeIcon(albumArtBitmap)
         // Creates an explicit intent for an Activity in your app
         val resultIntent = Intent(this, TimerActivity::class.java)
-
         // The stack builder object will contain an artificial back stack for the started Activity.
         // This ensures that navigating backward from the Activity leads out of
         // your application to the Home screen.
@@ -130,7 +129,6 @@ class TimerActivity : AppCompatActivity() {
         stackBuilder.addNextIntent(resultIntent)
         val resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(resultPendingIntent)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         // notificationId allows you to update the notification later on.
         notificationManager.notify(NOTIFICATION_ID, builder.build())
     }

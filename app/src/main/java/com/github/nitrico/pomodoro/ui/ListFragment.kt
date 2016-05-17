@@ -82,6 +82,7 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         super.onResume()
         Trello.addDataListener(this)
         Trello.addSessionListener(this)
+        onRefresh()
     }
 
     override fun onPause() {

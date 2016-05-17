@@ -1,11 +1,10 @@
-package com.github.nitrico.pomodoro.data
+package com.github.nitrico.pomodoro.tool
 
 import android.content.Context
 import android.preference.PreferenceManager
-import com.github.nitrico.pomodoro.tool.Serializer
 import java.io.Serializable
 
-object Data {
+object Cache {
 
     private const val JSON = "JSON"
 
@@ -58,14 +57,12 @@ object Data {
 
     fun save() {
         val json = Serializer.toJson(list.toTypedArray())
-        preferences.edit().putString(JSON, json).apply()
-        println("SAVED JSON: " + json)
+        preferences.edit().putString(JSON, json).commit()
     }
 
     private fun load() {
         val json = preferences.getString(JSON, "[]")
         list = Serializer.fromJson(json, Array<CardTime>::class.java).toMutableList()
-        println("SAVED LIST: " + list)
     }
 
     private fun doIfContained(cardId: String, func: CardTime.() -> Unit): Boolean {

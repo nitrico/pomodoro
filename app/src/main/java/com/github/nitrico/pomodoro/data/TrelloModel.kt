@@ -1,5 +1,6 @@
 package com.github.nitrico.pomodoro.data
 
+import com.github.nitrico.pomodoro.tool.Cache
 import java.io.Serializable
 
 interface TrelloItem : Serializable {
@@ -22,8 +23,8 @@ class TrelloCard(
         val desc: String,
         val url: String) : TrelloItem {
 
-    val pomodoros: Int get() = Data.getPomodoros(id)
-    val seconds: Long get() = Data.getSeconds(id)
+    val pomodoros: Int get() = Cache.getPomodoros(id)
+    val seconds: Long get() = Cache.getSeconds(id)
 
 }
 
