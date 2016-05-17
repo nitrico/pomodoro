@@ -9,7 +9,7 @@
     <dimen name="margin_half">8dp</dimen>
 
     <dimen name="title_textSize">40sp</dimen>
-    <dimen name="avatar_size">128dp</dimen>
+    <dimen name="avatar_size">120dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

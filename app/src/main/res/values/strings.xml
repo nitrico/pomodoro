@@ -14,10 +14,11 @@
     <string name="login">Connect with Trello</string>
     <string name="logout">Log out</string>
 
-    <string name="board">Board</string>
+    <string name="board">Trello board</string>
     <string name="todo_list">To do list</string>
     <string name="doing_list">Doing list</string>
     <string name="done_list">Done list</string>
+    <string name="unused_lists">Unused</string>
 
     <string name="unselected_board">Select a Trello board</string>
     <string name="unselected_todo_list">Select a To do list</string>

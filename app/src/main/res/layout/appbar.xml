@@ -48,7 +48,7 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabs_height"
-        app:tabTextColor="#7FFF"
+        app:tabTextColor="@color/whiteTrans"
         app:tabSelectedTextColor="@color/white"
         app:tabIndicatorColor="@color/white" />
 

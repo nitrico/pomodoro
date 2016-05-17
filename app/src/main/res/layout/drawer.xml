@@ -9,40 +9,8 @@
 
     <include layout="@layout/drawer_account" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:divider" />
+    <include layout="@layout/divider" />
 
-    <LinearLayout
-        android:id="@+id/board"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin"
-        android:background="?selectableItemBackground"
-        android:orientation="vertical" >
-        <TextView
-            android:id="@+id/boardHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/board"
-            style="@style/HeaderText" />
-        <TextView
-            android:id="@+id/boardName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text"
-            android:text="@string/unselected_board" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:divider" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/drawerList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <include layout="@layout/drawer_config" />
 
 </LinearLayout>

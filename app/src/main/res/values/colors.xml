@@ -1,19 +1,19 @@
 <resources>
 
+    <color name="primary">#C62828</color>
+    <color name="primaryDark">#B71C1C</color>
     <color name="accent">@color/primary</color>
-    <color name="primary">#C62828</color> <!-- #F44336 -->
-    <color name="primaryDark">#B71C1C</color> <!-- #D32F2F -->
-    <color name="primaryText">#212121</color>
+    <color name="primaryText">@color/grayDark</color>
     <color name="secondaryText">#727272</color>
-    <color name="divider">#E2E2E2</color> <!-- #4FFF #E2E2E2 -->
-    <color name="statusBar">#1C000000</color>
+    <color name="divider">#D8D8D8</color> <!-- #4FFF #E2E2E2 -->
+    <color name="statusBar">#1D000000</color>
     <color name="windowBackground">#F0F0F0</color>
 
     <color name="trello">#026AA7</color>
     <color name="black">@android:color/black</color>
-    <color name="gray">#555</color>
-    <color name="disabled">#CCC</color>
+    <color name="grayDark">#FF555555</color>
+    <color name="gray">#CCC</color>
     <color name="white">@android:color/white</color>
-    <color name="white_trans">#A0FFFFFF</color>
+    <color name="whiteTrans">#7FFF</color>
 
 </resources>

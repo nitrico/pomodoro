@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin"
+            android:layout_marginBottom="2dp"
             android:orientation="vertical" >
             <TextView
                 android:id="@+id/name"
@@ -35,19 +36,11 @@
                 android:layout_marginBottom="2dp"
                 android:lineSpacingExtra="2dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/gray" />
+                android:textColor="@color/grayDark" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="2dp"
-            android:background="@color/divider" />
+        <include layout="@layout/divider" />
 
-        <!--android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,9 +58,7 @@
                 android:layout_marginRight="4dp"
                 android:padding="8dp"
                 android:background="?selectableItemBackground"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_add_time"
-                android:tint="@color/gray" />
+                android:src="@drawable/ic_timer" />
             <ImageView
                 android:id="@+id/edit"
                 android:layout_width="40dp"
@@ -76,19 +67,15 @@
                 android:layout_marginRight="4dp"
                 android:padding="8dp"
                 android:background="?selectableItemBackground"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_edit"
-                android:tint="@color/gray" />
-            <ImageView
+                android:src="@drawable/ic_edit" />
+            <!--<ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:padding="8dp"
                 android:background="?selectableItemBackground"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_delete"
-                android:tint="@color/gray" />
+                android:src="@drawable/ic_delete" />-->
             <ImageView
                 android:id="@+id/open"
                 android:layout_width="40dp"
@@ -97,9 +84,7 @@
                 android:layout_marginRight="4dp"
                 android:padding="8dp"
                 android:background="?selectableItemBackground"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launch"
-                android:tint="@color/gray" />
+                android:src="@drawable/ic_launch" />
             <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

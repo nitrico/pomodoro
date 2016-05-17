@@ -6,17 +6,31 @@ import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import com.github.nitrico.pomodoro.R
+import com.github.nitrico.pomodoro.data.TrelloCard
+import com.github.nitrico.pomodoro.tool.consume
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
-import com.github.nitrico.pomodoro.tool.navigationBarWidth
+import com.github.nitrico.pomodoro.tool.setFullScreenLayout
 import kotlinx.android.synthetic.main.activity_timer.*
 
 class TimerActivity : AppCompatActivity() {
 
+    companion object {
+        const val KEY_CARD = "KEY_CARD"
+    }
+
+    private lateinit var card: TrelloCard
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
+
+        // initialize UI
+        setFullScreenLayout()
         setSupportActionBar(toolbar)
-        layout.setPadding(0, 0, navigationBarWidth, navigationBarHeight)
+        layout.setPadding(0, 0, 0, navigationBarHeight)
+
+        card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
+        title = card.name
     }
 
     private fun startTimer(seconds: Long) {
@@ -54,8 +68,9 @@ class TimerActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.start25m -> { startTimer(25*60 +1); true }
-        R.id.start5m -> { startTimer(5*60 +1); true }
+        android.R.id.home -> consume { finish() }
+        R.id.start25m -> consume { startTimer(25*60 +1) }
+        R.id.start5m -> consume { startTimer(5*60 +1) }
         else -> super.onOptionsItemSelected(item)
     }
 

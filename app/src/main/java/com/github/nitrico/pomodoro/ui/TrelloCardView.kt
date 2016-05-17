@@ -12,6 +12,7 @@ import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.setTextOrHideView
 import io.nlopez.smartadapters.views.BindableRelativeLayout
 import kotlinx.android.synthetic.main.view_card.view.*
+import org.jetbrains.anko.startActivity
 
 class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(context) {
 
@@ -24,7 +25,9 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
         // click listeners
         open.setOnClickListener { openCard(item) }
         edit.setOnClickListener { editCard(item) }
-        timer.setOnClickListener { context.startActivity(Intent(context, TimerActivity::class.java)) }
+        timer.setOnClickListener {
+            context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to item)
+        }
     }
 
     /**
@@ -50,7 +53,6 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
                 .onPositive { dialog, action ->
                     val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text
                     val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text
-                    println("Card: " +name +" " +desc)
                     // SAVE THE CARD !!
                 }
                 .show()

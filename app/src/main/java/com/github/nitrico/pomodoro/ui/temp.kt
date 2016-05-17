@@ -11,6 +11,19 @@ package com.github.nitrico.pomodoro.ui
                 })
 
 
+    fun chooseTodoList(context: Context, callback: ((TrelloList) -> Unit) ? = null) {
+        MaterialDialog.Builder(context)
+                .title("Choose to do list")
+                .items(Trello.boardListNames)
+                .itemsCallbackSingleChoice(-1, { dialog, itemView, which, text ->
+                    val list = Trello.lists[which]
+                    callback?.invoke(list)
+                    true
+                })
+                .positiveText("Ok")
+                .show()
+    }
+
 
 
 api.getUser(token!!)

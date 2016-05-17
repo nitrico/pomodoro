@@ -2,29 +2,33 @@ package com.github.nitrico.pomodoro.data
 
 import java.io.Serializable
 
-data class TrelloBoard(
-        val id: String,
-        val name: String,
-        val lists: List<TrelloList>?) : Serializable
+interface TrelloItem : Serializable {
+    val id: String
+}
 
-data class TrelloList(
-        val id: String,
+class TrelloBoard(
+        override val id: String,
         val name: String,
-        val cards: List<TrelloCard>?) : Serializable
+        val lists: List<TrelloList>) : TrelloItem
 
-data class TrelloCard(
-        val id: String,
+class TrelloList(
+        override val id: String,
+        val name: String,
+        val cards: List<TrelloCard>?) : TrelloItem
+
+class TrelloCard(
+        override val id: String,
         val name: String,
         val desc: String,
         val due: String,
-        val url: String) : Serializable
+        val url: String) : TrelloItem
 
-data class TrelloMember(
-        val id: String,
+class TrelloMember(
+        override val id: String,
         val email: String,
         val username: String,
         val fullName: String,
-        val avatarHash: String?) : Serializable {
+        val avatarHash: String?) : TrelloItem {
 
     val avatar: String?
         get() {

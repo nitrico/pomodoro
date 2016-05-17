@@ -62,8 +62,12 @@ object Trello {
 
     private val dataListeners = mutableListOf<DataListener>()
 
+    //if ((it !is Activity || !it.isFinishing) && (it !is Fragment || !it.isAdded)) it.onDataChanged()
+    // si quito la condición del fragmento funciona como quiero pero aparece el error de null en findView...
     private fun dispatchDataChange() = dataListeners.forEach {
-        if ((it !is Activity || !it.isFinishing) && (it !is Fragment || !it.isAdded)) it.onDataChanged()
+        if ((it !is Activity || !it.isFinishing)
+                //&& (it !is Fragment || it.activity == null)
+        ) it.onDataChanged()
     }
     fun addDataListener(listener: DataListener) {
         if (!dataListeners.contains(listener)) dataListeners.add(listener)
@@ -76,6 +80,7 @@ object Trello {
     private const val KEY_LOGIN_URL = "KEY_LOGIN_URL"
     private const val KEY_SECRET = "KEY_SECRET"
     private const val KEY_TOKEN = "KEY_TOKEN"
+    private const val KEY_BOARD = "KEY_BOARD"
 
     private val consumer = OkHttpOAuthConsumer(BuildConfig.TRELLO_KEY, BuildConfig.TRELLO_SECRET)
     private val provider = DefaultOAuthProvider(
@@ -96,37 +101,21 @@ object Trello {
 
     private lateinit var context: Context
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
-
     private var secret: String? = null
-
-    var token: String? = null
-        private set
-    var logged = false
-        private set
-    var user: TrelloMember? = null
-        private set
-    var boards: List<TrelloBoard> = emptyList()
-        private set
-    var lists: List<TrelloList> = emptyList()
-        private set
-    var todoList: TrelloList? = null
-        private set
-    var doingList: TrelloList? = null
-        private set
-    var doneList: TrelloList? = null
-        private set
-    var todoCards: List<TrelloCard> = emptyList()
-        private set
-    var doingCards: List<TrelloCard> = emptyList()
-        private set
-    var doneCards: List<TrelloCard> = emptyList()
-        private set
-    var boardId: String? = "5733f00584deae6ac11ac64b" // 5733f00584deae6ac11ac64b
-    var todoListId: String? = "5733f00584deae6ac11ac64c"
-    var doingListId: String? = "5733f00584deae6ac11ac64d"
-    var doneListId: String? = "5733f00584deae6ac11ac64e"
-    var listIds = listOf(todoListId, doingListId, doneListId)
-        private set
+    var token: String? = null; private set
+    var logged = false; private set
+    var user: TrelloMember? = null; private set
+    var boards: List<TrelloBoard> = emptyList(); private set
+    var board: TrelloBoard? = null; private set
+    var boardId: String? = null; private set // "5733f00584deae6ac11ac64b"
+    var lists: List<TrelloList> = emptyList(); private set
+    var todoListId: String? = null; private set
+    var doingListId: String? = null; private set
+    var doneListId: String? = null; private set
+    var todoCards: List<TrelloCard> = emptyList(); private set
+    var doingCards: List<TrelloCard> = emptyList(); private set
+    var doneCards: List<TrelloCard> = emptyList(); private set
+    var listIds: List<String>? = null; private set
 
     val boardNames: List<String>
         get() {
@@ -134,17 +123,17 @@ object Trello {
             boards.forEach { list.add(it.name) }
             return list
         }
-    val boardListNames: List<String>
-        get() {
-            val list = mutableListOf<String>()
-            lists.forEach { list.add(it.name) }
-            return list
-        }
+
+    fun List<TrelloItem>.findPositionById(id: String): Int {
+        for (i in 0..size-1) { if (get(i).id.equals(id)) return i }
+        return -1
+    }
 
     fun init(context: Context) {
         this.context = context
         token = preferences.getString(KEY_TOKEN, null)
         secret = preferences.getString(KEY_SECRET, null)
+        boardId = preferences.getString(KEY_BOARD, null)
 
         if (token != null && secret != null) async() {
             consumer.setTokenWithSecret(token, secret)
@@ -167,7 +156,6 @@ object Trello {
                 .putString(KEY_TOKEN, token)
                 .putString(KEY_SECRET, secret)
                 .commit()
-        logged = true
 
         Observable.zip(api.getUser(), api.getBoards(),
                 { user, boards -> Pair<TrelloMember, List<TrelloBoard>>(user, boards) })
@@ -175,9 +163,46 @@ object Trello {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     user = it.first
-                    boards = it.second
-                    lists = boards[0].lists!!
+                    boards = it.second.filter { it.lists.size > 2 }
+                    if (boardId != null) {
+                        val position = boards.findPositionById(boardId!!)
+                        if (position != -1) setCurrentBoard(boards[position])
+                        else setCurrentBoard(boards[0])
+                    }
+                    else setCurrentBoard(boards[0])
+
+                    logged = true
                     dispatchLogIn() // notify listeners
+                },{
+                    context.toast(it.message ?: "Unknown error on finishLogIn")
+                })
+    }
+
+    fun setCurrentBoard(board: TrelloBoard) {
+        this.board = board
+        lists = board.lists
+        boardId = board.id
+        preferences.edit().putString(KEY_BOARD, boardId).commit()
+        setupLists(lists[0].id, lists[1].id, lists[2].id)
+    }
+
+    fun setupLists(todoId: String, doingId: String, doneId: String) {
+        todoListId = todoId
+        doingListId = doingId
+        doneListId = doneId
+        listIds = listOf(todoListId!!, doingListId!!, doneListId!!)
+        Observable.zip(
+                api.getListCards(todoListId!!),
+                api.getListCards(doingListId!!),
+                api.getListCards(doneListId!!),
+                { l1, l2, l3 -> Triple<List<TrelloCard>, List<TrelloCard>, List<TrelloCard>>(l1, l2, l3) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    todoCards = it.first
+                    doingCards = it.second
+                    doneCards = it.third
+                    dispatchDataChange()
                 },{
                     context.toast(it.message ?: "Unknown error")
                 })
@@ -200,9 +225,7 @@ object Trello {
     }
 
     fun addTodoCard(name: String, desc: String?, callback: (() -> Unit) ? = null) {
-        // CHECK ALL REQUERIMENTS
-        // CHECK logged
-        // CHECK todoListId != null
+        if (!logged || todoListId == null) return
         api.addCardToList(todoListId!!, name, desc)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -210,7 +233,7 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error when adding a to do")
+                    context.toast(it.message ?: "Unknown error adding a card")
                 })
     }
 
@@ -223,7 +246,7 @@ object Trello {
                     context.toast("card moved to Done list")
                     callback?.invoke()
                 },{
-                    context.toast(it.message.toString())
+                    context.toast(it.message ?: "Unknown error moving the card")
                 })
     }
 
@@ -241,7 +264,7 @@ object Trello {
                     }
                     callback?.invoke(it)
                 },{
-                    context.toast(it.message ?: "Unknown error getting list cards")
+                    //context.toast(it.message ?: "Unknown error getting list cards")
                 })
     }
 

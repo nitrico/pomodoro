@@ -11,7 +11,7 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginRight="@dimen/margin"
+        android:layout_marginRight="24dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/desc_user_avatar"
         tools:ignore="RtlHardcoded" />
@@ -26,7 +26,7 @@
             android:id="@+id/profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="12dp"
             android:orientation="vertical" >
             <TextView
                 android:id="@+id/fullname"
@@ -38,11 +38,13 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?android:textColorPrimary"
                 android:maxLines="1" />-->
             <TextView
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?android:textColorPrimary"
                 android:maxLines="1" />
         </LinearLayout>
 

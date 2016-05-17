@@ -9,11 +9,13 @@ import android.os.Build
 import android.support.annotation.ArrayRes
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
+import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
@@ -58,7 +60,7 @@ var Drawable.tint: Int
 
 fun TabLayout.tint(selectedPosition: Int = 0,
                    selectedColor: Int = context.colorRes(R.color.white),
-                   @ColorRes defaultColor: Int = R.color.white_trans) {
+                   @ColorRes defaultColor: Int = R.color.whiteTrans) {
     forEach { it.icon?.tint = context.colorRes(defaultColor) }
     get(selectedPosition).icon?.tint = selectedColor
 }
@@ -89,6 +91,10 @@ fun Context.drawablesFromArrayRes(@ArrayRes id: Int): List<Drawable> {
 fun View.show() { visibility = View.VISIBLE }
 fun View.hide() { visibility = View.GONE }
 
+fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
+}
+
 fun View.setMargins(l: Int, t: Int, r: Int, b: Int) {
     if (layoutParams is ViewGroup.MarginLayoutParams) {
         val params = layoutParams as ViewGroup.MarginLayoutParams
@@ -111,9 +117,10 @@ fun ImageView.load(url: String, circular: Boolean = false) = ImageLoader.load(th
 
 ///// DRAWER LAYOUT /////
 
-val DrawerLayout.isOpen: Boolean get() = isDrawerOpen(GravityCompat.START)
-fun DrawerLayout.open() = openDrawer(GravityCompat.START)
-fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
+private const val DEFAULT_DRAWER_GRAVITY = GravityCompat.START
+val DrawerLayout.isOpen: Boolean get() = isDrawerOpen(DEFAULT_DRAWER_GRAVITY)
+fun DrawerLayout.open() = openDrawer(DEFAULT_DRAWER_GRAVITY)
+fun DrawerLayout.close() = closeDrawer(DEFAULT_DRAWER_GRAVITY)
 fun DrawerLayout.toggle() = if (isOpen) close() else open()
 
 

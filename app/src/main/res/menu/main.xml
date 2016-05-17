@@ -8,4 +8,10 @@
         android:title="@string/add"
         app:showAsAction="always" />
 
+    <!--<item
+        android:id="@+id/account"
+        android:icon="@drawable/ic_account"
+        android:title="Account"
+        app:showAsAction="always" />-->
+
 </menu>

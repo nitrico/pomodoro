@@ -31,12 +31,12 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
     }
 
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
-        listType = arguments.getInt(KEY_LIST_TYPE, -1)
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        listType = arguments.getInt(KEY_LIST_TYPE, -1)
 
         // initialize UI
         with(list) {
@@ -62,25 +62,33 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
     }
 
-    override fun onRefresh() = Trello.getListCards(Trello.listIds[listType]) {
-        adapter.setItems(it)
-        layout.isRefreshing = false
+    override fun onRefresh() {
+        val id = when(listType) {
+            0 -> Trello.todoListId
+            1 -> Trello.doingListId
+            2 -> Trello.doneListId
+            else -> null
+        }
+        Trello.getListCards(id) {
+            adapter.setItems(it)
+            layout.isRefreshing = false
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        Trello.addSessionListener(this)
         Trello.addDataListener(this)
+        Trello.addSessionListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        Trello.removeSessionListener(this)
         Trello.removeDataListener(this)
+        Trello.removeSessionListener(this)
     }
 
+    override fun onDataChanged() = onRefresh()
     override fun onLogIn() = onRefresh()
     override fun onLogOut() = adapter.setItems(emptyList<TrelloCard>())
-    override fun onDataChanged() = onRefresh()
 
 }
