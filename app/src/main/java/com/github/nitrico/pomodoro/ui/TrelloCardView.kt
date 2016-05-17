@@ -3,31 +3,36 @@ package com.github.nitrico.pomodoro.ui
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.widget.AppCompatEditText
-import android.view.LayoutInflater
-import android.widget.TextView
-import com.afollestad.materialdialogs.MaterialDialog
 import com.github.nitrico.pomodoro.R
+import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloCard
+import com.github.nitrico.pomodoro.tool.DialogCreator
 import com.github.nitrico.pomodoro.tool.setTextOrHideView
 import io.nlopez.smartadapters.views.BindableRelativeLayout
 import kotlinx.android.synthetic.main.view_card.view.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(context) {
 
     override fun getLayoutId() = R.layout.view_card
 
-    override fun bind(item: TrelloCard) {
-        name.text = item.name
-        desc.setTextOrHideView(item.desc)
+    override fun bind(card: TrelloCard) {
+        name.text = card.name
+        desc.setTextOrHideView(card.desc)
 
         // click listeners
-        open.setOnClickListener { openCard(item) }
-        edit.setOnClickListener { editCard(item) }
+        open.setOnClickListener { openCard(card) }
+        edit.setOnClickListener { DialogCreator.editCard(context, card) }
+        delete.setOnClickListener { Trello.deleteCard(card.id) }
         timer.setOnClickListener {
-            context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to item)
+            context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to card)
         }
+
+        open.setOnLongClickListener { context.toast("Open card"); true }
+        edit.setOnLongClickListener { context.toast("Edit card"); true }
+        delete.setOnLongClickListener { context.toast("Delete card"); true }
+        // timer.setOnLongClickListener { context.toast(""); true }
     }
 
     /**
@@ -38,28 +43,6 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
             data = Uri.parse(item.url)
             context.startActivity(this)
         }
-    }
-
-    private fun editCard(card: TrelloCard) {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_card, null, false)
-        (view.findViewById(R.id.name) as AppCompatEditText).setText(item.name, TextView.BufferType.EDITABLE)
-        (view.findViewById(R.id.desc) as AppCompatEditText).setText(item.desc, TextView.BufferType.EDITABLE)
-        MaterialDialog.Builder(context)
-                .title("Edit card")
-                .customView(view, true)
-                .positiveText("Save")
-                .negativeText("Cancel")
-                .negativeColor(R.color.black)
-                .onPositive { dialog, action ->
-                    val name = (dialog.findViewById(R.id.name) as AppCompatEditText).text
-                    val desc = (dialog.findViewById(R.id.desc) as AppCompatEditText).text
-                    // SAVE THE CARD !!
-                }
-                .show()
-    }
-
-    private fun moveCard() {
-
     }
 
 }

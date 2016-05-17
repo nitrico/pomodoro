@@ -43,10 +43,14 @@ object Trello {
     private val sessionListeners = mutableListOf<SessionListener>()
 
     private fun dispatchLogIn() = sessionListeners.forEach {
-        if ((it !is Activity || !it.isFinishing) && (it !is Fragment || !it.isAdded)) it.onLogIn()
+        if ((it !is Activity || !it.isFinishing)
+                //&& (it !is Fragment || !it.isAdded)
+        ) it.onLogIn()
     }
     private fun dispatchLogOut() = sessionListeners.forEach {
-        if ((it !is Activity || !it.isFinishing) && (it !is Fragment || !it.isAdded)) it.onLogOut()
+        if ((it !is Activity || !it.isFinishing)
+                //&& (it !is Fragment || !it.isAdded)
+        ) it.onLogOut()
     }
     fun addSessionListener(listener: SessionListener) {
         if (!sessionListeners.contains(listener)) sessionListeners.add(listener)
@@ -87,6 +91,7 @@ object Trello {
             "https://trello.com/1/OAuthGetRequestToken",
             "https://trello.com/1/OAuthGetAccessToken",
             "https://trello.com/1/OAuthAuthorizeToken?name=Pomodoro&scope=read,write,account")
+    //comments
 
     private val api = Retrofit.Builder()
             .baseUrl("https://api.trello.com/")
@@ -224,7 +229,7 @@ object Trello {
         dispatchLogOut() // notify listeners
     }
 
-    fun addTodoCard(name: String, desc: String?, callback: (() -> Unit) ? = null) {
+    fun addTodoCard(name: String, desc: String?, callback: (() -> Unit)? = null) {
         if (!logged || todoListId == null) return
         api.addCardToList(todoListId!!, name, desc)
                 .subscribeOn(Schedulers.io())
@@ -237,16 +242,42 @@ object Trello {
                 })
     }
 
-    fun moveCardToList(cardId: String, listId: String, callback: (() -> Unit) ? = null) {
+    private fun moveCardToList(cardId: String, listId: String, callback: (() -> Unit)? = null) {
         // CHECKS
-        Trello.api.moveCardToList(cardId, listId) // ESTE NO ESTÁ PROBADO
+        api.moveCardToList(cardId, listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    context.toast("card moved to Done list")
+                    context.toast("Card moved")
+                    dispatchDataChange()
                     callback?.invoke()
                 },{
                     context.toast(it.message ?: "Unknown error moving the card")
+                })
+    }
+    fun moveCardToTodoList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, todoListId!!, callback)
+    }
+    fun moveCardToDoingList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, doingListId!!, callback)
+    }
+    fun moveCardToDoneList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, doneListId!!, callback)
+    }
+
+    fun addCommentToCard(cardId: String, comment: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        api.addCommentToCard(cardId, comment)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    dispatchDataChange() // ?
+                    callback?.invoke()
+                },{
+                    context.toast(it.message ?: "Unknown error adding the comment")
                 })
     }
 
@@ -268,15 +299,33 @@ object Trello {
                 })
     }
 
-    /*
-    fun getTodoCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(todoListId, callback)
-    fun getDoingCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(doingListId, callback)
-    fun getDoneCards(callback: ((List<TrelloCard>) -> Unit)?) = getListCards(doneListId, callback)
-    */
+    fun updateCard(cardId: String, name: String, desc: String, callback: (() -> Unit) ? = null) {
+        // CHECKS
+        Observable.zip(
+                api.updateCardName(cardId, name),
+                api.updateCardDescription(cardId, desc ?: ""),
+                { item1, item2 -> })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    dispatchDataChange()
+                    callback?.invoke()
+                },{
+                    context.toast(it.message ?: "Unknown error on finishLogIn")
+                })
+    }
 
-    fun updateCard(cardId: String, callback: (() -> Unit) ? = null) { }
-    fun removeCard(cardId: String, callback: (() -> Unit) ? = null) { }
-
+    fun deleteCard(cardId: String, callback: (() -> Unit) ? = null) {
+        api.deleteCard(cardId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    dispatchDataChange()
+                    callback?.invoke()
+                },{
+                    context.toast(it.message ?: "Unknown error deleting the card")
+                })
+    }
 
 
     /**

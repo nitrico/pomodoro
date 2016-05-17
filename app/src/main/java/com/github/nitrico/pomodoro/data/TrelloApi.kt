@@ -1,6 +1,5 @@
 package com.github.nitrico.pomodoro.data
 
-import com.github.nitrico.pomodoro.BuildConfig
 import retrofit2.http.*
 import rx.Observable
 
@@ -11,32 +10,17 @@ interface TrelloApi {
     }
 
     @GET(VERSION + "/members/me")
-    fun getUser(
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY
-    ): Observable<TrelloMember>
+    fun getUser(): Observable<TrelloMember>
 
     @GET(VERSION + "/members/me/boards")
     fun getBoards(
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY,
             @Query("lists") lists: String = "open",
             @Query("cards") cards: String = "all"
     ): Observable<List<TrelloBoard>>
 
-    @GET(VERSION + "/boards/{id}/lists")
-    fun getBoardLists(
-            @Path("id") boardId: String,
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY,
-            @Query("cards") cards: String = "all"
-    ): Observable<List<TrelloList>>
-
     @GET(VERSION + "/lists/{id}/cards")
     fun getListCards(
             @Path("id") listId: String,
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY,
             @Query("cards") cards: String = "all"
     ): Observable<List<TrelloCard>>
 
@@ -44,17 +28,36 @@ interface TrelloApi {
     fun addCardToList(
             @Path("listId") listId: String,
             @Query("name") cardName: String,
-            @Query("desc") cardDesc: String?,
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY
+            @Query("desc") cardDesc: String?
+    ): Observable<Any>
+
+    @POST(VERSION + "/cards/{cardId}/actions/comments")
+    fun addCommentToCard(
+            @Path("cardId") cardId: String,
+            @Query("text") text: String
     ): Observable<Any>
 
     @PUT(VERSION + "/cards/{cardId}")
     fun moveCardToList(
             @Path("cardId") cardId: String,
-            @Query("idList") idList: String,
-            @Query("token") token: String = Trello.token!!,
-            @Query("key") key: String = BuildConfig.TRELLO_KEY
+            @Query("idList") idList: String
+    ): Observable<Any>
+
+    @PUT(VERSION + "/cards/{cardId}/name")
+    fun updateCardName(
+            @Path("cardId") cardId: String,
+            @Query("value") cardDescription: String
+    ): Observable<Any>
+
+    @PUT(VERSION + "/cards/{cardId}/desc")
+    fun updateCardDescription(
+        @Path("cardId") cardId: String,
+        @Query("value") cardDescription: String
+    ): Observable<Any>
+
+    @DELETE(VERSION + "/cards/{cardId}")
+    fun deleteCard(
+            @Path("cardId") cardId: String
     ): Observable<Any>
 
 }

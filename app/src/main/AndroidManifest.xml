@@ -22,8 +22,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.TimerActivity" />
+        <activity android:name=".ui.TimerActivity" android:launchMode="singleTask" />
         <activity android:name=".data.Trello$LoginActivity" android:theme="@style/LoginTheme" />
+
+        <service android:name=".tool.TimerService" />
 
     </application>
 
