@@ -2,6 +2,9 @@ package com.github.nitrico.pomodoro.tool
 
 import com.squareup.moshi.Moshi
 
+/**
+ * Interface to be implemented by a JSON (de)serializer
+ */
 interface SerializerInterface {
     fun <T> fromJson(json: String, clazz: Class<T>): T
     fun toJson(obj: Any): String
@@ -20,7 +23,7 @@ object Serializer : SerializerInterface {
 /**
  * SerializerInterface implementation using Gson
  */
-class Serializer : SerializerInterface {
+object Serializer : SerializerInterface {
     private val gson = Gson()
     override fun <T> fromJson(json: String, clazz: Class<T>): T = gson.fromJson(json, clazz)
     override fun toJson(obj: Any): String = gson.toJson(obj)

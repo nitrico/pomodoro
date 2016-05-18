@@ -29,30 +29,20 @@ class TrelloCardView(context: Context) : BindableRelativeLayout<TrelloCard>(cont
         }
         else data.hide()
 
-        // click listeners
         open.setOnClickListener { openCard(card) }
-        edit.setOnClickListener { DialogCreator.editCard(context, card) }
-        //delete.setOnClickListener { DialogCreator.deleteCard(context, card) }
-        //comment.setOnClickListener { DialogCreator.addComment(context, card) }
-        timer.setOnClickListener {
-            context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to card)
-        }
-
         open.setOnLongClickListener { context.toast(R.string.open_card); true }
+        edit.setOnClickListener { DialogCreator.editCard(context, card) }
         edit.setOnLongClickListener { context.toast(R.string.edit_card); true }
-        //delete.setOnLongClickListener { context.toast(R.string.delete_card); true }
-        //comment.setOnLongClickListener { context.toast(R.string.add_comment); true }
-        // timer.setOnLongClickListener { context.toast(""); true }
+        timer.setOnClickListener { context.startActivity<TimerActivity>(TimerActivity.KEY_CARD to card) }
+        timer.setOnLongClickListener { context.toast(R.string.start_timer); true }
     }
 
     /**
-     * Open card on Trello app, if installed, or browser otherwise
+     * Opens the card on Trello app if installed or default browser if not
      */
-    private fun openCard(card: TrelloCard) {
-        Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(card.url)
-            context.startActivity(this)
-        }
+    private fun openCard(card: TrelloCard) = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse(card.url)
+        context.startActivity(this)
     }
 
 }

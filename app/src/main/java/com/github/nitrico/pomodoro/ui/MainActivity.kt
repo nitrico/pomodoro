@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
+import com.github.nitrico.pomodoro.App
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloBoard
@@ -24,6 +25,13 @@ import kotlinx.android.synthetic.main.drawer_config.*
 
 class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
+    private val listChangeListener = object : GestureAdapter.OnDataChangeListener<TrelloList> {
+        override fun onItemReorder(item: TrelloList, fromPos: Int, toPos: Int) {
+            Trello.setupLists(adapter.data[0].id, adapter.data[1].id, adapter.data[2].id)
+        }
+        override fun onItemRemoved(item: TrelloList, position: Int) { }
+    }
+
     private lateinit var adapter: DrawerListAdapter
     private var currentBoardIndex = 0
 
@@ -33,22 +41,25 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         setContentView(R.layout.activity_main)
         //drawer.getOverlay().add(DesignSpec.fromResource(drawer, R.raw.spec))
 
-        // initialize UI
+        // initialize Toolbar
         if (Build.VERSION.SDK_INT >= 21) window.statusBarColor = resources.getColor(R.color.statusBar)
         setFullScreenLayout()
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         appTitle.typeface = App.mocharyTypeface
-        setupTabs()
 
-        drawerList.layoutManager = LinearLayoutManager(this)
+        // initialize ViewPager and tabs
+        pager.offscreenPageLimit = 2
+        pager.adapter = TabsAdapter(supportFragmentManager)
+        tabs.setupWithViewPager(pager)
+
+        // initialize settings drawer
+        boardSelector.setOnClickListener {
+            DialogCreator.chooseBoard(this@MainActivity, currentBoardIndex) { setupBoard(it) }
+        }
         adapter = DrawerListAdapter()
-        adapter.setDataChangeListener(object : GestureAdapter.OnDataChangeListener<TrelloList> {
-            override fun onItemReorder(item: TrelloList, fromPos: Int, toPos: Int) {
-                Trello.setupLists(adapter.data[0].id, adapter.data[1].id, adapter.data[2].id)
-            }
-            override fun onItemRemoved(item: TrelloList, position: Int) { }
-        })
+        adapter.setDataChangeListener(listChangeListener)
+        drawerList.layoutManager = LinearLayoutManager(this)
         drawerList.adapter = adapter
         GestureManager.Builder(drawerList)
                 .setLongPressDragEnabled(true)
@@ -59,13 +70,6 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         // initialize Trello session
         Trello.init(this)
         if (Trello.logged) onLogIn() else onLogOut()
-    }
-
-    private fun setupTabs() {
-        pager.adapter = TabsAdapter(supportFragmentManager)
-        pager.offscreenPageLimit = 2
-        tabs.setupWithViewPager(pager)
-        //tabs.setIcons(drawablesFromArrayRes(R.array.icons))
     }
 
     override fun onResume() {
@@ -80,43 +84,23 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
 
     override fun onLogIn() {
         setupAccount(Trello.user)
-        with(connect) {
-            setText(R.string.logout)
-            setBackgroundResource(R.color.primary)
-            setOnClickListener { Trello.logOut() }
-        }
+        setupConnectButton(true)
         drawerConfig.show()
-        boardHeader.isEnabled = true
-        boardName.isEnabled = true
+
+        // setup board selector
         boardName.text = Trello.board?.name
         currentBoardIndex = Trello.boards.indexOf(Trello.board)
-        with(boardSelector) {
-            isEnabled = true
-            setOnClickListener {
-                DialogCreator.chooseBoard(this@MainActivity, currentBoardIndex) { setupBoard(it) }
-            }
-        }
+
+        // setup lists selector
         adapter.data = Trello.lists
         if (Trello.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
-        //splash.hide()
-    }
 
-    private fun setupBoard(board: TrelloBoard) {
-        boardName.text = board.name
-        currentBoardIndex = Trello.boards.indexOf(board)
-        Trello.setCurrentBoard(board)
-        adapter.data = board.lists
-        if (Trello.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
-        setupTabs()
+        //splash.hide()
     }
 
     override fun onLogOut() {
         setupAccount(null)
-        with(connect) {
-            setText(R.string.login)
-            setBackgroundResource(R.color.trello)
-            setOnClickListener { Trello.logIn(this@MainActivity) }
-        }
+        setupConnectButton(false)
         drawerConfig.hide()
         //splash.show()
     }
@@ -129,7 +113,6 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
                 avatar.load(user.avatar!!)
             }
             fullname.text = user.fullName
-            //username.text = user.username
             email.text = user.email
         }
         else {
@@ -138,13 +121,34 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         }
     }
 
+    private fun setupConnectButton(logged: Boolean) {
+        val textRes = if (logged) R.string.logout else R.string.login
+        val bgColorRes = if (logged) R.color.primary else R.color.trello
+        connect.setText(textRes)
+        connect.setBackgroundResource(bgColorRes)
+        connect.setOnClickListener { if (logged) Trello.logOut() else Trello.logIn() }
+    }
+
+    private fun setupBoard(board: TrelloBoard) {
+        Trello.setCurrentBoard(board)
+        boardName.text = board.name
+        currentBoardIndex = Trello.boards.indexOf(board)
+
+        // update drawer list
+        adapter.data = board.lists
+        if (Trello.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
+
+        // reset tabs
+        pager.adapter = TabsAdapter(supportFragmentManager)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home /*, R.id.account*/ -> { drawer.toggle(); true }
+        android.R.id.home -> { drawer.toggle(); true }
         R.id.add -> { DialogCreator.addTodo(this); true }
         else -> super.onOptionsItemSelected(item)
     }

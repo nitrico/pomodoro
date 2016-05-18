@@ -7,7 +7,7 @@
 
     <!-- tools:replace="android:icon" avoids a Manifest Merger error with DashedCircularProgress lib -->
     <application
-        android:name=".tool.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,15 +15,24 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon" >
 
-        <activity android:name=".ui.MainActivity" android:theme="@style/AppTheme.First" >
+        <activity
+            android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.First" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.TimerActivity" android:launchMode="singleTask" />
-        <activity android:name=".data.Trello$LoginActivity" android:theme="@style/LoginTheme" />
+        <activity
+            android:name=".ui.TimerActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".data.Trello$LoginActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/LoginTheme" />
 
         <service android:name=".tool.TimerService" />
 

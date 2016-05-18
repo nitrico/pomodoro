@@ -6,11 +6,11 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 
-
+/**
+ * Interface to be implemented by an image loader
+ */
 interface ImageLoaderInterface {
-
     fun load(imageView: ImageView, url: String, circular: Boolean = false)
-
 }
 
 /**

@@ -3,10 +3,19 @@
     <string name="app_name">Pomodoro</string>
     <string name="trello">Trello</string>
 
+    <!-- Tabs -->
     <string name="todo">To do</string>
     <string name="doing">Doing</string>
     <string name="done">Done</string>
 
+    <!-- Fields -->
+    <string name="name">Name</string>
+    <string name="desc">Description</string>
+    <string name="desc_optional">Description (optional)</string>
+    <string name="comment">Comment</string>
+
+    <!-- Actions -->
+    <string name="start_timer">Start timer</string>
     <string name="add">Add</string>
     <string name="add_todo">Add to do card</string>
     <string name="add_comment">Add comment</string>
@@ -15,17 +24,12 @@
     <string name="delete">Delete</string>
     <string name="delete_card">Delete card</string>
     <string name="open_card">Open card</string>
-    <string name="sure">Are you sure?</string>
-    <string name="save">Save</string>
-    <string name="ok">OK</string>
+    <string name="update">Update</string>
+    <string name="select">Select</string>
     <string name="cancel">Cancel</string>
+    <string name="sure">Are you sure?</string>
 
-    <string name="name">Name</string>
-    <string name="desc">Description</string>
-    <string name="desc_optional">Description (optional)</string>
-    <string name="comment">Comment</string>
-
-    <string name="settings">Settings</string>
+    <!-- Settings drawer -->
     <string name="login">Connect with Trello</string>
     <string name="logout">Log out</string>
     <string name="board">Trello board</string>
@@ -35,7 +39,8 @@
     <string name="done_list">Done list</string>
     <string name="unused">Unused</string>
 
+    <!-- ImageView descriptions -->
     <string name="desc_user_avatar">User avatar</string>
-    <string name="desc_ic_drag">Drag icon</string>
+    <string name="desc_icon_drag">Drag icon</string>
 
 </resources>

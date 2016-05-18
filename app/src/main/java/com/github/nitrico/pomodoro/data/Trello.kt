@@ -28,28 +28,27 @@ import rx.schedulers.Schedulers
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import se.akerfeldt.okhttp.signpost.SigningInterceptor
 
+
+/**
+ * Singleton object to manage Trello session and API calls
+ */
 object Trello {
 
 
-    ///// SESSION LISTENER /////
+    // SESSION LISTENER
 
     interface SessionListener {
-        // empty implementations provided to override only desired method
-        fun onLogIn() { }
-        fun onLogOut() { }
+        fun onLogIn()
+        fun onLogOut()
     }
 
     private val sessionListeners = mutableListOf<SessionListener>()
 
     private fun dispatchLogIn() = sessionListeners.forEach {
-        if ((it !is Activity || !it.isFinishing)
-                //&& (it !is Fragment || !it.isAdded)
-        ) it.onLogIn()
+        if (it !is Activity || !it.isFinishing) it.onLogIn()
     }
     private fun dispatchLogOut() = sessionListeners.forEach {
-        if ((it !is Activity || !it.isFinishing)
-                //&& (it !is Fragment || !it.isAdded)
-        ) it.onLogOut()
+        if (it !is Activity || !it.isFinishing) it.onLogOut()
     }
     fun addSessionListener(listener: SessionListener) {
         if (!sessionListeners.contains(listener)) sessionListeners.add(listener)
@@ -57,7 +56,7 @@ object Trello {
     fun removeSessionListener(listener: SessionListener) = sessionListeners.remove(listener)
 
 
-    ///// DATA LISTENER /////
+    // DATA LISTENER
 
     interface DataListener {
         fun onDataChanged()
@@ -65,12 +64,8 @@ object Trello {
 
     private val dataListeners = mutableListOf<DataListener>()
 
-    //if ((it !is Activity || !it.isFinishing) && (it !is Fragment || !it.isAdded)) it.onDataChanged()
-    // si quito la condición del fragmento funciona como quiero pero aparece el error de null en findView...
     private fun dispatchDataChange() = dataListeners.forEach {
-        if ((it !is Activity || !it.isFinishing)
-                //&& (it !is Fragment || it.activity == null)
-        ) it.onDataChanged()
+        if (it !is Activity || !it.isFinishing) it.onDataChanged()
     }
     fun addDataListener(listener: DataListener) {
         if (!dataListeners.contains(listener)) dataListeners.add(listener)
@@ -81,16 +76,15 @@ object Trello {
 
     private const val CALLBACK_URL = "com.github.nitrico.pomodoro://trello-callback"
     private const val KEY_LOGIN_URL = "KEY_LOGIN_URL"
-    private const val KEY_SECRET = "KEY_SECRET"
-    private const val KEY_TOKEN = "KEY_TOKEN"
     private const val KEY_BOARD = "KEY_BOARD"
+    private const val KEY_TOKEN = "KEY_TOKEN"
+    private const val KEY_SECRET = "KEY_SECRET"
 
     private val consumer = OkHttpOAuthConsumer(BuildConfig.TRELLO_KEY, BuildConfig.TRELLO_SECRET)
     private val provider = DefaultOAuthProvider(
             "https://trello.com/1/OAuthGetRequestToken",
             "https://trello.com/1/OAuthGetAccessToken",
             "https://trello.com/1/OAuthAuthorizeToken?name=Pomodoro&scope=read,write,account")
-    //comments
 
     private val api = Retrofit.Builder()
             .baseUrl("https://api.trello.com/")
@@ -103,8 +97,8 @@ object Trello {
             .build()
             .create(TrelloApi::class.java)
 
-    private lateinit var context: Context
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+    private lateinit var context: Context
     private var secret: String? = null
     var token: String? = null; private set
     var logged = false; private set
@@ -120,19 +114,17 @@ object Trello {
     var doingCards: List<TrelloCard> = emptyList(); private set
     var doneCards: List<TrelloCard> = emptyList(); private set
     var listIds: List<String>? = null; private set
-
     val boardNames: List<String>
         get() {
-            val list = mutableListOf<String>()
-            boards.forEach { list.add(it.name) }
-            return list
+            val names = mutableListOf<String>()
+            boards.forEach { names.add(it.name) }
+            return names
         }
 
-    fun List<TrelloItem>.findPositionById(id: String): Int {
-        for (i in 0..size-1) { if (get(i).id.equals(id)) return i }
-        return -1
-    }
-
+    /**
+     * Initializes the Trello object
+     * This method must be called before any other of this object
+     */
     fun init(context: Context) {
         this.context = context
         token = preferences.getString(KEY_TOKEN, null)
@@ -145,12 +137,12 @@ object Trello {
         }
     }
 
-    fun logIn(context: Context) {
-        this.context = context
-        async() {
-            val url = Trello.provider.retrieveRequestToken(Trello.consumer, Trello.CALLBACK_URL)
-            uiThread { context.startActivity<LoginActivity>(Trello.KEY_LOGIN_URL to url) }
-        }
+    /**
+     * Launches an Activity with a WebView to start the login process
+     */
+    fun logIn() = async() {
+        val url = provider.retrieveRequestToken(consumer, CALLBACK_URL)
+        uiThread { context.startActivity<LoginActivity>(KEY_LOGIN_URL to url) }
     }
 
     private fun finishLogIn() {
@@ -161,27 +153,34 @@ object Trello {
                 .putString(KEY_SECRET, secret)
                 .commit()
 
+        // get user and user's boards
         Observable.zip(api.getUser(), api.getBoards(),
                 { user, boards -> Pair<TrelloMember, List<TrelloBoard>>(user, boards) })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    user = it.first
+                    // use only boards with 3 or more lists
                     boards = it.second.filter { it.lists.size > 2 }
+
+                    // use latest used board or first one if never used one
                     if (boardId != null) {
-                        val position = boards.findPositionById(boardId!!)
+                        val position = boards.findIndexById(boardId!!)
                         if (position != -1) setCurrentBoard(boards[position])
                         else setCurrentBoard(boards[0])
                     }
                     else setCurrentBoard(boards[0])
 
+                    user = it.first
                     logged = true
-                    dispatchLogIn() // notify listeners
+                    dispatchLogIn()
                 },{
                     context.toast(it.message ?: "Unknown error on finishLogIn")
                 })
     }
 
+    /**
+     * Configures the board received as an argument to be used
+     */
     fun setCurrentBoard(board: TrelloBoard) {
         this.board = board
         lists = board.lists
@@ -190,6 +189,9 @@ object Trello {
         setupLists(lists[0].id, lists[1].id, lists[2].id)
     }
 
+    /**
+     * Retrieves the cards of the three used lists
+     */
     fun setupLists(todoId: String, doingId: String, doneId: String) {
         todoListId = todoId
         doingListId = doingId
@@ -208,10 +210,13 @@ object Trello {
                     doneCards = it.third
                     dispatchDataChange()
                 },{
-                    context.toast(it.message ?: "Unknown error")
+                    context.toast(it.message ?: "Unknown error getting lists cards")
                 })
     }
 
+    /**
+     * Finishes the Trello session
+     */
     fun logOut() {
         logged = false
         user = null
@@ -224,10 +229,12 @@ object Trello {
                 .putString(KEY_TOKEN, null)
                 .putString(KEY_SECRET, null)
                 .commit()
-
-        dispatchLogOut() // notify listeners
+        dispatchLogOut()
     }
 
+    /**
+     * Adds a card to the current to do list
+     */
     fun addTodoCard(name: String, desc: String?, callback: (() -> Unit)? = null) {
         if (!logged || todoListId == null) return
         api.addCardToList(todoListId!!, name, desc)
@@ -241,32 +248,9 @@ object Trello {
                 })
     }
 
-    private fun moveCardToList(cardId: String, listId: String, callback: (() -> Unit)? = null) {
-        // CHECKS
-        api.moveCardToList(cardId, listId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    context.toast("Card moved")
-                    dispatchDataChange()
-                    callback?.invoke()
-                },{
-                    context.toast(it.message ?: "Unknown error moving the card")
-                })
-    }
-    fun moveCardToTodoList(cardId: String, callback: (() -> Unit)? = null) {
-        // CHECKS
-        moveCardToList(cardId, todoListId!!, callback)
-    }
-    fun moveCardToDoingList(cardId: String, callback: (() -> Unit)? = null) {
-        // CHECKS
-        moveCardToList(cardId, doingListId!!, callback)
-    }
-    fun moveCardToDoneList(cardId: String, callback: (() -> Unit)? = null) {
-        // CHECKS
-        moveCardToList(cardId, doneListId!!, callback)
-    }
-
+    /**
+     * Adds a comment to a card whose id is received as an argument
+     */
     fun addCommentToCard(cardId: String, comment: String, callback: (() -> Unit)? = null) {
         // CHECKS
         api.addCommentToCard(cardId, comment)
@@ -280,6 +264,9 @@ object Trello {
                 })
     }
 
+    /**
+     * Retrieves the cards contained in a list whose id is received as an argument
+     */
     fun getListCards(listId: String?, callback: ((List<TrelloCard>) -> Unit) ? = null) {
         // CHECKS
         if (!logged || token == null || listId == null) return
@@ -298,6 +285,9 @@ object Trello {
                 })
     }
 
+    /**
+     * Updates the name and description information of a card
+     */
     fun updateCard(cardId: String, name: String, desc: String, callback: (() -> Unit) ? = null) {
         // CHECKS
         Observable.zip(
@@ -310,10 +300,13 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error on finishLogIn")
+                    context.toast(it.message ?: "Unknown error updating the card")
                 })
     }
 
+    /**
+     * Deletes the card whose id is received as an argument
+     */
     fun deleteCard(cardId: String, callback: (() -> Unit) ? = null) {
         api.deleteCard(cardId)
                 .subscribeOn(Schedulers.io())
@@ -325,6 +318,50 @@ object Trello {
                     context.toast(it.message ?: "Unknown error deleting the card")
                 })
     }
+
+    private fun moveCardToList(cardId: String, listId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        api.moveCardToList(cardId, listId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    context.toast("Card moved")
+                    dispatchDataChange()
+                    callback?.invoke()
+                },{
+                    context.toast(it.message ?: "Unknown error moving the card")
+                })
+    }
+
+    /**
+     * Moves the card whose id is received as an argumento to the To do list
+     */
+    fun moveCardToTodoList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, todoListId!!, callback)
+    }
+
+    /**
+     * Moves the card whose id is received as an argumento to the Doing list
+     */
+    fun moveCardToDoingList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, doingListId!!, callback)
+    }
+
+    /**
+     * Moves the card whose id is received as an argumento to the Done list
+     */
+    fun moveCardToDoneList(cardId: String, callback: (() -> Unit)? = null) {
+        // CHECKS
+        moveCardToList(cardId, doneListId!!, callback)
+    }
+
+    private fun List<TrelloItem>.findIndexById(id: String): Int {
+        for (i in 0..size-1) { if (get(i).id.equals(id)) return i }
+        return -1
+    }
+
 
 
     /**

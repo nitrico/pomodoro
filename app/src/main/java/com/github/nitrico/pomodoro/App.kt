@@ -1,4 +1,4 @@
-package com.github.nitrico.pomodoro.tool
+package com.github.nitrico.pomodoro
 
 import android.app.Application
 import android.graphics.Typeface

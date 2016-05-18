@@ -1,9 +1,8 @@
 package com.github.nitrico.pomodoro.data
 
 import com.github.nitrico.pomodoro.tool.Cache
-import java.io.Serializable
 
-interface TrelloItem : Serializable {
+interface TrelloItem {
     val id: String
 }
 
@@ -14,8 +13,7 @@ class TrelloBoard(
 
 class TrelloList(
         override val id: String,
-        val name: String,
-        val cards: List<TrelloCard>?) : TrelloItem
+        val name: String) : TrelloItem
 
 class TrelloCard(
         override val id: String,
@@ -27,13 +25,12 @@ class TrelloCard(
         get() = Cache.getPomodoros(id)
 
     val seconds: Long
-        get() = Cache.getSeconds(id)
+        get() = Cache.getTimeInSeconds(id)
 }
 
 class TrelloMember(
         override val id: String,
         val email: String,
-        val username: String,
         val fullName: String,
         val avatarHash: String?) : TrelloItem {
 

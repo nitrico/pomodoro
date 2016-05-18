@@ -10,12 +10,18 @@ import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloBoard
 import com.github.nitrico.pomodoro.data.TrelloCard
 
+/**
+ * Helper object used to create dialog windows
+ */
 object DialogCreator {
 
+    /**
+     * Creates a dialog to select a board from a list
+     */
     fun chooseBoard(context: Context, current: Int, callback: ((TrelloBoard) -> Unit)? = null) {
         MaterialDialog.Builder(context)
                 .title(R.string.select_board)
-                .positiveText(R.string.ok)
+                .positiveText(R.string.select)
                 .items(Trello.boardNames)
                 .itemsCallbackSingleChoice(current, { dialog, itemView, which, text ->
                     val board = Trello.boards[which]
@@ -25,6 +31,9 @@ object DialogCreator {
                 .show()
     }
 
+    /**
+     * Creates a dialog to add a To do card
+     */
     fun addTodo(context: Context, callback: (() -> Unit) ? = null) {
         MaterialDialog.Builder(context)
                 .title(R.string.add_todo)
@@ -40,6 +49,9 @@ object DialogCreator {
                 .show()
     }
 
+    /**
+     * Creates a dialog to edit name and description of a card
+     */
     fun editCard(context: Context, card: TrelloCard, callback: (() -> Unit)? = null) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_card, null, false)
         (view.findViewById(R.id.name) as AppCompatEditText).setText(card.name, TextView.BufferType.EDITABLE)
@@ -47,7 +59,7 @@ object DialogCreator {
         MaterialDialog.Builder(context)
                 .title(R.string.edit_card)
                 .customView(view, true)
-                .positiveText(R.string.save)
+                .positiveText(R.string.update)
                 .negativeText(R.string.cancel)
                 .negativeColor(R.color.black)
                 .onPositive { dialog, action ->
@@ -58,6 +70,9 @@ object DialogCreator {
                 .show()
     }
 
+    /**
+     * Creates a dialog to add a comment to a card
+     */
     fun addComment(context: Context, card: TrelloCard, callback: (() -> Unit)? = null) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null, false)
         MaterialDialog.Builder(context)
@@ -73,6 +88,9 @@ object DialogCreator {
                 .show()
     }
 
+    /**
+     * Creates a dialog asking for confirmation to delete a card
+     */
     fun deleteCard(context: Context, card: TrelloCard, callback: (() -> Unit)? = null) {
         MaterialDialog.Builder(context)
                 .title(R.string.delete_card)

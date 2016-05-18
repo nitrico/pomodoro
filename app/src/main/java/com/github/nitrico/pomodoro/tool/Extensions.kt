@@ -23,10 +23,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.nitrico.pomodoro.R
 
+/**
+ * Calls the function received as a parameter and returns true
+ */
 fun consume(f: () -> Unit): Boolean {
     f()
     return true
 }
+
+fun Long.toTimeString(): String {
+    if (this < 60) return "$this s"
+    else {
+        val minutes: Long = (this / 60)
+        val seconds: Long = this - (minutes * 60)
+        return "$minutes:${seconds.toTwoDigitsString()}"
+    }
+}
+
+fun Long.toTwoDigitsString() = String.format("%02d", this)
 
 val Int.dp: Int // dip to px conversion
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5).toInt()

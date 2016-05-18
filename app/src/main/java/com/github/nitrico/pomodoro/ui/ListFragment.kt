@@ -42,7 +42,8 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
         // initialize UI
         with(list) {
-            setPadding(8.dp, 8.dp, 8.dp, 8.dp+activity.navigationBarHeight)
+            val dp8 = 8.dp
+            setPadding(dp8, dp8, dp8, dp8 + activity.navigationBarHeight)
             if (activity.isPortrait) layoutManager = LinearLayoutManager(activity)
             else layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }

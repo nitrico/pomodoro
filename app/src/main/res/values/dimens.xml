@@ -1,6 +1,7 @@
 <resources>
 
     <bool name="portrait">true</bool>
+    <bool name="landscape">false</bool>
     <bool name="table">false</bool>
 
     <dimen name="status_bar_height">0dp</dimen>

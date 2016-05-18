@@ -68,7 +68,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="20dp"
                     android:fontFamily="monospace"
-                    android:textColor="#FFBBBBBB"
+                    android:textColor="#AAA"
                     android:textSize="15sp" />
                 <ImageView
                     android:id="@+id/pomodorosIcon"
@@ -85,7 +85,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="monospace"
-                    android:textColor="#FFBBBBBB"
+                    android:textColor="#AAA"
                     android:textSize="15sp" />
             </LinearLayout>
             <LinearLayout
