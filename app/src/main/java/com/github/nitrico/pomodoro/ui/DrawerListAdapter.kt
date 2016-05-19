@@ -7,7 +7,7 @@ import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.TrelloList
 import com.thesurix.gesturerecycler.GestureAdapter
 import com.thesurix.gesturerecycler.GestureViewHolder
-import kotlinx.android.synthetic.main.view_drawer_item.view.*
+import kotlinx.android.synthetic.main.item_drawer_list.view.*
 
 class DrawerListAdapter() : GestureAdapter<TrelloList, DrawerListAdapter.DrawerViewHolder>() {
 
@@ -21,7 +21,7 @@ class DrawerListAdapter() : GestureAdapter<TrelloList, DrawerListAdapter.DrawerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrawerViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_drawer_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_drawer_list, parent, false)
         return DrawerViewHolder(view)
     }
 

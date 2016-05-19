@@ -101,14 +101,6 @@
                     android:id="@+id/timer"
                     android:src="@drawable/ic_timer"
                     style="@style/CardIconButton" />
-                <!--<ImageView
-                    android:id="@+id/comment"
-                    android:src="@drawable/ic_comment"
-                    style="@style/CardButton" />
-                    <ImageView
-                    android:id="@+id/delete"
-                    android:src="@drawable/ic_delete"
-                    style="@style/CardButton" />-->
                 <ImageView
                     android:id="@+id/edit"
                     android:src="@drawable/ic_edit"
@@ -116,7 +108,7 @@
 
                 <ImageView
                     android:id="@+id/open"
-                    android:src="@drawable/ic_launch"
+                    android:src="@drawable/ic_open"
                     style="@style/CardIconButton" />
             </LinearLayout>
         </FrameLayout>

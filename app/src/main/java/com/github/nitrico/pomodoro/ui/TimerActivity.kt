@@ -56,7 +56,6 @@ class TimerActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         layout.setPadding(0, 0, 0, navigationBarHeight)
         card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
-        //title = card.name
 
         text.text = App.TIME_POMODORO.toTimeString()
         name.text = card.name
@@ -94,13 +93,6 @@ class TimerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> { stop(true); true }
-        /*
-        R.id.pomodoro -> { startTimer(App.TIME_POMODORO, false); true }
-        R.id.longBreak -> { startTimer(App.TIME_LONG_BREAK, true); true }
-        R.id.shortBreak -> { startTimer(App.TIME_SHORT_BREAK, true); true }
-        R.id.pause -> { true }
-        R.id.resume -> { true }
-        */
         R.id.stop -> { stop(false); true }
         else -> super.onOptionsItemSelected(item)
     }
@@ -109,7 +101,7 @@ class TimerActivity : AppCompatActivity() {
 
     private fun startTimer(seconds: Long, isBreak: Boolean) {
         if (isBreak) fab.hide()
-        else Trello.moveCardToDoingList(card.id)
+        //else Trello.moveCardToDoingList(card.id)
 
         val max = seconds
         progress.max = max.toFloat()

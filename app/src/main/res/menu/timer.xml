@@ -8,29 +8,4 @@
         android:icon="@drawable/ic_stop"
         app:showAsAction="always" />
 
-    <!--<item
-        android:id="@+id/pomodoro"
-        android:title="Pomodoro"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/shortBreak"
-        android:title="Short break"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/longBreak"
-        android:title="Long break"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/pause"
-        android:title="Pause"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/resume"
-        android:title="Resume"
-        app:showAsAction="never" />-->
-
 </menu>

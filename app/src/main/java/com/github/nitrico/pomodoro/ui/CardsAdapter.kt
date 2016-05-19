@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.*
-import kotlinx.android.synthetic.main.view_card.view.*
+import kotlinx.android.synthetic.main.item_card.view.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -52,7 +52,7 @@ class CardsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_card, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card, parent, false)
         return ViewHolder(view)
     }
 

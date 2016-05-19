@@ -17,7 +17,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.anko.async
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
@@ -174,7 +173,7 @@ object Trello {
                     logged = true
                     dispatchLogIn()
                 },{
-                    context.toast(it.message ?: "Unknown error on finishLogIn")
+                    //context.toast(it.message ?: "Unknown error on finishLogIn")
                 })
     }
 
@@ -210,7 +209,7 @@ object Trello {
                     doneCards = it.third
                     dispatchDataChange()
                 },{
-                    context.toast(it.message ?: "Unknown error getting lists cards")
+                    //context.toast(it.message ?: "Unknown error getting lists cards")
                 })
     }
 
@@ -243,7 +242,7 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error adding a card")
+                    //context.toast(it.message ?: "Unknown error adding a card")
                 })
     }
 
@@ -255,10 +254,10 @@ object Trello {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    dispatchDataChange() // ?
+                    dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error adding the comment")
+                    //context.toast(it.message ?: "Unknown error adding the comment")
                 })
     }
 
@@ -296,7 +295,7 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error updating the card")
+                    //context.toast(it.message ?: "Unknown error updating the card")
                 })
     }
 
@@ -311,7 +310,7 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error deleting the card")
+                    //context.toast(it.message ?: "Unknown error deleting the card")
                 })
     }
 
@@ -323,7 +322,7 @@ object Trello {
                     dispatchDataChange()
                     callback?.invoke()
                 },{
-                    context.toast(it.message ?: "Unknown error moving the card")
+                    //context.toast(it.message ?: "Unknown error moving the card")
                 })
     }
 
