@@ -24,7 +24,7 @@ import android.widget.TextView
 import com.github.nitrico.pomodoro.R
 
 /**
- * Calls the function received as a parameter and returns true
+ * Call the function received as a parameter and return true
  */
 fun consume(f: () -> Unit): Boolean {
     f()
@@ -32,11 +32,19 @@ fun consume(f: () -> Unit): Boolean {
 }
 
 fun Long.toTimeString(): String {
-    if (this < 60) return "$this s"
+    val MINUTE: Long = 60
+    val HOUR: Long = 3600
+    if (this < MINUTE) return "${this}s"
+    else if (this < HOUR) {
+        val minutes: Long = this / MINUTE
+        val seconds: Long = this - (minutes * MINUTE)
+        return "${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+    }
     else {
-        val minutes: Long = (this / 60)
-        val seconds: Long = this - (minutes * 60)
-        return "$minutes:${seconds.toTwoDigitsString()}"
+        val hours: Long = this / HOUR
+        val minutes: Long = (this - hours*HOUR) / MINUTE
+        val seconds: Long = this - hours*HOUR - minutes*MINUTE
+        return "${hours}h:${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
     }
 }
 

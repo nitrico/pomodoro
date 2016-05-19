@@ -10,11 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
-import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.dp
-import com.github.nitrico.pomodoro.tool.isPortrait
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
-import io.nlopez.smartadapters.SmartAdapter
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.jetbrains.anko.support.v4.withArguments
 
@@ -26,43 +23,54 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
+    private lateinit var adapter: CardsAdapter
     private var listType = -1
 
-    private val adapter by lazy {
-        SmartAdapter.empty().map(TrelloCard::class.java, TrelloCardView::class.java).into(list)
-    }
-
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
+        retainInstance = true
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val tablet = activity.resources.getBoolean(R.bool.tablet)
+        val landscape = activity.resources.getBoolean(R.bool.landscape)
         listType = arguments.getInt(KEY_LIST_TYPE, -1)
 
-        // initialize UI
-        with(list) {
-            val dp8 = 8.dp
-            setPadding(dp8, dp8, dp8, dp8 + activity.navigationBarHeight)
-            if (activity.isPortrait) layoutManager = LinearLayoutManager(activity)
-            else layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        }
+        // initialize SwipeRefreshLayout
         with(layout) {
             setOnRefreshListener(this@ListFragment)
             setColorSchemeResources(android.R.color.white)
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
 
+        // setup RecyclerView paddings
+        if (tablet) {
+            val dp72 = 72.dp
+            list.setPadding(dp72, dp72, dp72, dp72 + activity.navigationBarHeight)
+        } else {
+            val dp8 = 8.dp
+            list.setPadding(dp8, dp8, dp8, dp8 + activity.navigationBarHeight)
+        }
+
+        // columns
+        val cols = getColumnsNumber(tablet, landscape)
+        if (cols == 1) list.layoutManager = LinearLayoutManager(activity)
+        else list.layoutManager = StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL)
+
+        adapter = CardsAdapter(emptyList(), listType == 0)
+        list.adapter = adapter
+
         // set items
         if (savedInstanceState == null) onRefresh()
         else {
-            val cards = when (listType) {
+            val items = when (listType) {
                 0 -> Trello.todoCards
                 1 -> Trello.doingCards
                 2 -> Trello.doneCards
                 else -> emptyList()
             }
-            adapter.setItems(cards)
+            adapter.setItems(items)
         }
     }
 
@@ -94,6 +102,11 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
 
     override fun onDataChanged() = onRefresh()
     override fun onLogIn() = onRefresh()
-    override fun onLogOut() = adapter.setItems(emptyList<TrelloCard>())
+    override fun onLogOut() { adapter.setItems(emptyList()) }
+
+    private fun getColumnsNumber(tablet: Boolean, landscape: Boolean): Int {
+        return if (tablet) { if (landscape) 4 else 3 }
+        else { if (landscape) 2 else 1 }
+    }
 
 }

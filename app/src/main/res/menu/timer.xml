@@ -3,13 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/start25m"
-        android:title="Start 25m"
+        android:id="@+id/stop"
+        android:title="Stop"
+        android:icon="@drawable/ic_stop"
+        app:showAsAction="always" />
+
+    <!--<item
+        android:id="@+id/pomodoro"
+        android:title="Pomodoro"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/start5m"
-        android:title="Start 5m"
+        android:id="@+id/shortBreak"
+        android:title="Short break"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/longBreak"
+        android:title="Long break"
         app:showAsAction="never" />
 
     <item
@@ -18,28 +29,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/stop"
-        android:title="Stop"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/finish25m"
-        android:title="Finish 25m"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/finish5m"
-        android:title="Finish 5m"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/finishCurrentTask"
-        android:title="Finish current task"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/finishCurrentBreak"
-        android:title="Finish current break"
-        app:showAsAction="never" />
+        android:id="@+id/resume"
+        android:title="Resume"
+        app:showAsAction="never" />-->
 
 </menu>

@@ -122,7 +122,7 @@ object Trello {
         }
 
     /**
-     * Initializes the Trello object
+     * Initialize the Trello object
      * This method must be called before any other of this object
      */
     fun init(context: Context) {
@@ -138,7 +138,7 @@ object Trello {
     }
 
     /**
-     * Launches an Activity with a WebView to start the login process
+     * Launch an Activity with a WebView to start the login process
      */
     fun logIn() = async() {
         val url = provider.retrieveRequestToken(consumer, CALLBACK_URL)
@@ -179,7 +179,7 @@ object Trello {
     }
 
     /**
-     * Configures the board received as an argument to be used
+     * Configure the board received as an argument to be used
      */
     fun setCurrentBoard(board: TrelloBoard) {
         this.board = board
@@ -190,7 +190,7 @@ object Trello {
     }
 
     /**
-     * Retrieves the cards of the three used lists
+     * Retrieve the cards of the three used lists
      */
     fun setupLists(todoId: String, doingId: String, doneId: String) {
         todoListId = todoId
@@ -215,7 +215,7 @@ object Trello {
     }
 
     /**
-     * Finishes the Trello session
+     * Finish the Trello session
      */
     fun logOut() {
         logged = false
@@ -233,10 +233,9 @@ object Trello {
     }
 
     /**
-     * Adds a card to the current to do list
+     * Add a card to the current to do list
      */
     fun addTodoCard(name: String, desc: String?, callback: (() -> Unit)? = null) {
-        if (!logged || todoListId == null) return
         api.addCardToList(todoListId!!, name, desc)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -249,10 +248,9 @@ object Trello {
     }
 
     /**
-     * Adds a comment to a card whose id is received as an argument
+     * Add a comment to a card whose id is received as an argument
      */
     fun addCommentToCard(cardId: String, comment: String, callback: (() -> Unit)? = null) {
-        // CHECKS
         api.addCommentToCard(cardId, comment)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -265,11 +263,10 @@ object Trello {
     }
 
     /**
-     * Retrieves the cards contained in a list whose id is received as an argument
+     * Retrieve the cards contained in a list whose id is received as an argument
      */
     fun getListCards(listId: String?, callback: ((List<TrelloCard>) -> Unit) ? = null) {
-        // CHECKS
-        if (!logged || token == null || listId == null) return
+        if (listId == null) return
         api.getListCards(listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -286,10 +283,9 @@ object Trello {
     }
 
     /**
-     * Updates the name and description information of a card
+     * Update the name and description information of a card
      */
     fun updateCard(cardId: String, name: String, desc: String, callback: (() -> Unit) ? = null) {
-        // CHECKS
         Observable.zip(
                 api.updateCardName(cardId, name),
                 api.updateCardDescription(cardId, desc ?: ""),
@@ -305,7 +301,7 @@ object Trello {
     }
 
     /**
-     * Deletes the card whose id is received as an argument
+     * Delete the card whose id is received as an argument
      */
     fun deleteCard(cardId: String, callback: (() -> Unit) ? = null) {
         api.deleteCard(cardId)
@@ -320,12 +316,10 @@ object Trello {
     }
 
     private fun moveCardToList(cardId: String, listId: String, callback: (() -> Unit)? = null) {
-        // CHECKS
         api.moveCardToList(cardId, listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    context.toast("Card moved")
                     dispatchDataChange()
                     callback?.invoke()
                 },{
@@ -334,7 +328,7 @@ object Trello {
     }
 
     /**
-     * Moves the card whose id is received as an argumento to the To do list
+     * Move the card whose id is received as an argument to the To do list
      */
     fun moveCardToTodoList(cardId: String, callback: (() -> Unit)? = null) {
         // CHECKS
@@ -342,7 +336,7 @@ object Trello {
     }
 
     /**
-     * Moves the card whose id is received as an argumento to the Doing list
+     * Move the card whose id is received as an argument to the Doing list
      */
     fun moveCardToDoingList(cardId: String, callback: (() -> Unit)? = null) {
         // CHECKS
@@ -350,7 +344,7 @@ object Trello {
     }
 
     /**
-     * Moves the card whose id is received as an argumento to the Done list
+     * Move the card whose id is received as an argument to the Done list
      */
     fun moveCardToDoneList(cardId: String, callback: (() -> Unit)? = null) {
         // CHECKS

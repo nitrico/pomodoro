@@ -100,7 +100,7 @@
                 <ImageView
                     android:id="@+id/timer"
                     android:src="@drawable/ic_timer"
-                    style="@style/CardButton" />
+                    style="@style/CardIconButton" />
                 <!--<ImageView
                     android:id="@+id/comment"
                     android:src="@drawable/ic_comment"
@@ -112,12 +112,12 @@
                 <ImageView
                     android:id="@+id/edit"
                     android:src="@drawable/ic_edit"
-                    style="@style/CardButton" />
+                    style="@style/CardIconButton" />
 
                 <ImageView
                     android:id="@+id/open"
                     android:src="@drawable/ic_launch"
-                    style="@style/CardButton" />
+                    style="@style/CardIconButton" />
             </LinearLayout>
         </FrameLayout>
 

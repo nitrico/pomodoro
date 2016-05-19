@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), Trello.SessionListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //drawer.getOverlay().add(DesignSpec.fromResource(drawer, R.raw.spec))
 
         // initialize Toolbar
         if (Build.VERSION.SDK_INT >= 21) window.statusBarColor = resources.getColor(R.color.statusBar)

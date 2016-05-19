@@ -4,6 +4,7 @@
     package="com.github.nitrico.pomodoro" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- tools:replace="android:icon" avoids a Manifest Merger error with DashedCircularProgress lib -->
     <application

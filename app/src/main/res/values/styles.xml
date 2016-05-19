@@ -22,6 +22,10 @@
         <item name="android:windowNoTitle">false</item>
     </style>
 
+    <style name="AppTheme.Timer">
+        <item name="android:background">?colorPrimary</item>
+    </style>
+
     <style name="CustomWindowTitleBackground">
         <item name="android:background">?colorPrimary</item>
     </style>
@@ -34,10 +38,6 @@
     </style>
 
 
-    <style name="AppTheme.Splash">
-        <item name="android:background">@color/accent</item>
-    </style>
-
     <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="colorPrimary">@color/trello</item>
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
@@ -46,11 +46,11 @@
     <style name="HeaderText">
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:textColor">@color/header_text</item>
+        <item name="android:textColor">?colorPrimary</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="CardButton">
+    <style name="CardIconButton">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:layout_marginLeft">4dp</item>
@@ -58,5 +58,6 @@
         <item name="android:padding">8dp</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
+
 
 </resources>

@@ -8,7 +8,7 @@
     <color name="statusBar">#1D000000</color>
     <color name="windowBackground">#EDEDED</color> <!-- #F3F3F3 -->
 
-    <color name="red">#C62828 </color>
+    <color name="red">#C62828</color>
     <color name="trello">#026AA7</color>
     <color name="blackTrans">#67000000</color>
     <color name="black">@android:color/black</color>
@@ -16,6 +16,6 @@
     <color name="gray">#CCC</color>
     <color name="grayTrans">#CCF4F4F4</color>
     <color name="white">@android:color/white</color>
-    <color name="whiteTrans">#7FFF</color>
+    <color name="whiteTrans">#9FFF</color>
 
 </resources>

@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="@dimen/margin"
-            android:textColor="@color/text"
+            android:textColor="?android:textColorPrimary"
             android:text="@string/select_board"
             android:maxLines="1"
             android:ellipsize="end"

@@ -9,6 +9,7 @@ import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
 import com.github.nitrico.pomodoro.data.TrelloBoard
 import com.github.nitrico.pomodoro.data.TrelloCard
+import com.github.nitrico.pomodoro.ui.TimerActivity
 
 /**
  * Helper object used to create dialog windows
@@ -16,7 +17,7 @@ import com.github.nitrico.pomodoro.data.TrelloCard
 object DialogCreator {
 
     /**
-     * Creates a dialog to select a board from a list
+     * Create a dialog to select a board from a list
      */
     fun chooseBoard(context: Context, current: Int, callback: ((TrelloBoard) -> Unit)? = null) {
         MaterialDialog.Builder(context)
@@ -32,7 +33,7 @@ object DialogCreator {
     }
 
     /**
-     * Creates a dialog to add a To do card
+     * Create a dialog to add a To do card
      */
     fun addTodo(context: Context, callback: (() -> Unit) ? = null) {
         MaterialDialog.Builder(context)
@@ -50,7 +51,7 @@ object DialogCreator {
     }
 
     /**
-     * Creates a dialog to edit name and description of a card
+     * Create a dialog to edit name and description of a card
      */
     fun editCard(context: Context, card: TrelloCard, callback: (() -> Unit)? = null) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_card, null, false)
@@ -71,7 +72,7 @@ object DialogCreator {
     }
 
     /**
-     * Creates a dialog to add a comment to a card
+     * Create a dialog to add a comment to a card
      */
     fun addComment(context: Context, card: TrelloCard, callback: (() -> Unit)? = null) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null, false)
@@ -100,6 +101,26 @@ object DialogCreator {
                 .negativeColor(R.color.black)
                 .onPositive { materialDialog, dialogAction ->
                     Trello.deleteCard(card.id, callback)
+                }
+                .show()
+    }
+
+
+    fun nextAction(context: Context, callback: ((Int) -> Unit)? = null) {
+        MaterialDialog.Builder(context)
+                .items(R.array.actions)
+                .title(R.string.next_action)
+                .positiveText(R.string.card_done)
+                .negativeText(R.string.back)
+                .negativeColor(R.color.black)
+                .onPositive { materialDialog, dialogAction ->
+                    callback?.invoke(TimerActivity.ACTION_DONE)
+                }
+                .onNegative { materialDialog, dialogAction ->
+                    callback?.invoke(TimerActivity.ACTION_BACK)
+                }
+                .itemsCallback { dialog, itemView, which, text ->
+                    callback?.invoke(which)
                 }
                 .show()
     }

@@ -2,6 +2,7 @@ package com.github.nitrico.pomodoro.tool
 
 import android.content.Context
 import android.preference.PreferenceManager
+import com.github.nitrico.pomodoro.App
 
 /**
  * Singleton object used to save the pomodoros and total time expended on a card
@@ -21,7 +22,7 @@ object Cache {
     private var list = mutableListOf<CardData>()
 
     /**
-     * Initializes the Cache object
+     * Initialize the Cache object
      * This method must be called before any other of this object
      */
     fun init(context: Context) {
@@ -30,15 +31,15 @@ object Cache {
     }
 
     /**
-     * Increments the pomodoro counter and adds 25 minutes to the total time
+     * Increment the pomodoro counter and add 25 minutes to the total time
      * of the card whose id is provided as an argument
      */
     fun addPomodoro(cardId: String) {
         val done = doIfContained(cardId) {
             pomodoros++
-            seconds += 1500
+            seconds += App.TIME_POMODORO
         }
-        if (!done) list.add(CardData(cardId, 1, 1500))
+        if (!done) list.add(CardData(cardId, 1, App.TIME_POMODORO))
         save()
     }
 
@@ -61,7 +62,7 @@ object Cache {
     }
 
     /**
-     * Saves the data as a JSON string in SharedPreferences
+     * Save the data as a JSON string in SharedPreferences
      */
     fun save() {
         val json = Serializer.toJson(list.toTypedArray())
@@ -69,7 +70,7 @@ object Cache {
     }
 
     /**
-     * Loads the data saved in SharedPreferences
+     * Load the data saved in SharedPreferences
      */
     private fun load() {
         val json = preferences.getString(KEY_JSON, "[]")

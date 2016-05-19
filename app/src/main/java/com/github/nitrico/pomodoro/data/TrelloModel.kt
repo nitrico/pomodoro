@@ -1,8 +1,9 @@
 package com.github.nitrico.pomodoro.data
 
 import com.github.nitrico.pomodoro.tool.Cache
+import java.io.Serializable
 
-interface TrelloItem {
+interface TrelloItem : Serializable {
     val id: String
 }
 

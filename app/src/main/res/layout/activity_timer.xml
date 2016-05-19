@@ -1,69 +1,145 @@
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     android:background="?colorPrimary"
-    android:orientation="vertical"
     tools:context="ui.TimerActivity" >
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="0dp" >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clipToPadding="false" >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:minHeight="?android:attr/actionBarSize"
-            android:layout_marginTop="@dimen/status_bar_height"
-            app:navigationIcon="@drawable/ic_close"
-            app:contentInsetStart="0dp"
-            app:titleMarginStart="8dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <com.github.glomadrian.dashedcircularprogress.DashedCircularProgress
-            android:id="@+id/progress"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:gravity="center"
-            android:layout_gravity="center"
-            app:progress_icon="@android:drawable/presence_online"
-            app:external_color="#0FFF"
-            app:base_color="@color/whiteTrans"
-            app:progress_color="@color/white"
-            app:min="0"
-            app:max="999" />
-
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="36sp" />
+            android:background="@color/primary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="4dp" >
 
-    </FrameLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/action_bar_height"
+                android:layout_marginTop="@dimen/status_bar_height"
+                android:layout_marginRight="3dp"
+                app:navigationIcon="@drawable/ic_close"
+                app:contentInsetStart="0dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical" >
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="13dp"
+                        android:paddingBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        style="@style/HeaderText" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/timeTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@color/whiteTrans"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="Total time: " />
+                        <TextView
+                            android:id="@+id/time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/whiteTrans"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/pomodorosTag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@color/whiteTrans"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="Pomodoros: " />
+                        <TextView
+                            android:id="@+id/pomodoros"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/whiteTrans"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
 
-    <!--<com.github.nitrico.pomodoro.ui.CircleTimerView
-        android:id="@+id/ctv"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true" />-->
+        </android.support.design.widget.AppBarLayout>
 
-</LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blackTrans" >
+
+            <com.github.glomadrian.dashedcircularprogress.DashedCircularProgress
+                android:id="@+id/progress"
+                android:layout_width="@dimen/timer_size"
+                android:layout_height="@dimen/timer_size"
+                android:layout_gravity="center"
+                app:progress_icon="@drawable/ic_alarm_on_white_48dp"
+                app:external_color="?colorPrimary"
+                app:base_color="@color/whiteTrans"
+                app:progress_color="@color/white"
+                app:min="0"
+                app:max="999" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="@dimen/timer_size"
+                android:layout_height="@dimen/timer_size"
+                android:layout_gravity="center"
+                android:padding="56dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/timer_textSize" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:src="@drawable/ic_play"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/white"
+        app:fabSize="normal" />
+
+</android.support.design.widget.CoordinatorLayout>
