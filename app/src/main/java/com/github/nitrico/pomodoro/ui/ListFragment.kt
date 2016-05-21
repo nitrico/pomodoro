@@ -1,40 +1,41 @@
 package com.github.nitrico.pomodoro.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.nitrico.flux.action.ErrorAction
+import com.github.nitrico.flux.store.StoreChange
 import com.github.nitrico.pomodoro.R
-import com.github.nitrico.pomodoro.data.Trello
+import com.github.nitrico.pomodoro.action.trello.*
+import com.github.nitrico.pomodoro.store.TrelloStore
 import com.github.nitrico.pomodoro.tool.dp
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
 import kotlinx.android.synthetic.main.fragment_list.*
+import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.support.v4.withArguments
 
-class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
-        Trello.SessionListener, Trello.DataListener {
+class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val KEY_LIST_TYPE = "KEY_LIST_TYPE"
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
+    override fun getStores() = MainActivity.stores
+
     private lateinit var adapter: CardsAdapter
     private var listType = -1
 
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
-        retainInstance = true
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val tablet = activity.resources.getBoolean(R.bool.tablet)
-        val landscape = activity.resources.getBoolean(R.bool.landscape)
         listType = arguments.getInt(KEY_LIST_TYPE, -1)
 
         // initialize SwipeRefreshLayout
@@ -45,6 +46,7 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
 
         // setup RecyclerView paddings
+        val tablet = activity.resources.getBoolean(R.bool.tablet)
         if (tablet) {
             val dp72 = 72.dp
             list.setPadding(dp72, dp72, dp72, dp72 + activity.navigationBarHeight)
@@ -54,6 +56,7 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         }
 
         // columns
+        val landscape = activity.resources.getBoolean(R.bool.landscape)
         val cols = getColumnsNumber(tablet, landscape)
         if (cols == 1) list.layoutManager = LinearLayoutManager(activity)
         else list.layoutManager = StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL)
@@ -62,47 +65,53 @@ class ListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
         list.adapter = adapter
 
         // set items
-        if (savedInstanceState == null) onRefresh()
-        else {
-            val items = when (listType) {
-                0 -> Trello.todoCards
-                1 -> Trello.doingCards
-                2 -> Trello.doneCards
-                else -> emptyList()
+        if (savedInstanceState == null) GetCards()
+        else setItems()
+    }
+
+    override fun onError(error: ErrorAction) {
+        toast("error on : " +error.action +" " +error.throwable.message +" " +error.throwable.cause)
+    }
+
+    override fun onStoreChanged(change: StoreChange) {
+        when (change.store) {
+            TrelloStore -> when (change.action) {
+                is SelectBoard,
+                is ReorderLists,
+                is EditCard,
+                is DeleteCard,
+                is AddComment,
+                is LogIn.Success -> getCards()
+                is LogOut -> adapter.setItems(emptyList())
+                is AddTodo -> if (listType == 0) getCards()
+                is GetCards -> setItems()
             }
-            adapter.setItems(items)
         }
     }
 
     override fun onRefresh() {
-        val id = when(listType) {
-            0 -> Trello.todoListId
-            1 -> Trello.doingListId
-            2 -> Trello.doneListId
-            else -> null
-        }
-        Trello.getListCards(id) {
-            adapter.setItems(it)
+        if (view != null && TrelloStore.logged && TrelloStore.listIds?.get(listType) != null) {
+            getCards()
+        } else {
             layout.isRefreshing = false
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Trello.addDataListener(this)
-        Trello.addSessionListener(this)
-        onRefresh()
+    private fun getCards() {
+        if (view != null && TrelloStore.logged && TrelloStore.listIds?.get(listType) != null) {
+            layout.isRefreshing = true
+            GetCards()
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        Trello.removeDataListener(this)
-        Trello.removeSessionListener(this)
+    private fun setItems() {
+        when (listType) {
+            0 -> adapter.setItems(TrelloStore.todoCards)
+            1 -> adapter.setItems(TrelloStore.doingCards)
+            2 -> adapter.setItems(TrelloStore.doneCards)
+        }
+        layout.isRefreshing = false
     }
-
-    override fun onDataChanged() = onRefresh()
-    override fun onLogIn() = onRefresh()
-    override fun onLogOut() { adapter.setItems(emptyList()) }
 
     private fun getColumnsNumber(tablet: Boolean, landscape: Boolean): Int {
         return if (tablet) { if (landscape) 4 else 3 }

@@ -19,8 +19,8 @@ package com.github.nitrico.pomodoro.tool;
 // https://gist.github.com/bverc/1492672
 
 import android.os.Handler;
-import android.os.SystemClock;
 import android.os.Message;
+import android.os.SystemClock;
 
 /**
  * Schedule a countdown until a time in the future, with
@@ -47,7 +47,7 @@ import android.os.Message;
  * {@link #onTick(long)} takes an amount of time to execute that is significant
  * compared to the countdown interval.
  */
-public abstract class CountDownTimer {
+public abstract class Timer {
 
     /**
      * Millis since epoch when alarm should stop.
@@ -74,7 +74,7 @@ public abstract class CountDownTimer {
      * @param countDownInterval The interval along the way to receive
      *   {@link #onTick(long)} callbacks.
      */
-    public CountDownTimer(long millisInFuture, long countDownInterval) {
+    public Timer(long millisInFuture, long countDownInterval) {
         mMillisInFuture = millisInFuture;
         mCountdownInterval = countDownInterval;
     }
@@ -82,7 +82,7 @@ public abstract class CountDownTimer {
     /**
      * Cancel the countdown.
      *
-     * Do not call it from inside CountDownTimer threads
+     * Do not call it from inside Timer threads
      */
     public final void cancel() {
         mHandler.removeMessages(MSG);
@@ -92,7 +92,7 @@ public abstract class CountDownTimer {
     /**
      * Start the countdown.
      */
-    public synchronized final CountDownTimer start() {
+    public synchronized final Timer start() {
         if (mMillisInFuture <= 0) {
             onFinish();
             return this;
@@ -144,7 +144,7 @@ public abstract class CountDownTimer {
         @Override
         public void handleMessage(Message msg) {
 
-            synchronized (CountDownTimer.this) {
+            synchronized (Timer.this) {
                 if (!mPaused) {
                     final long millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime();
 

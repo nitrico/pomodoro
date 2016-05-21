@@ -31,7 +31,7 @@
             android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".data.Trello$LoginActivity"
+            android:name=".action.trello.LogIn$LoginActivity"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/LoginTheme" />
 

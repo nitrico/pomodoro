@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.nitrico.pomodoro.R
+import com.github.nitrico.pomodoro.action.trello.EditCard
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.tool.*
 import kotlinx.android.synthetic.main.item_card.view.*
@@ -36,7 +37,7 @@ class CardsAdapter(
 
             open.setOnClickListener {  context.openCard(card) }
             open.setOnLongClickListener { context.toast(R.string.open_card); true }
-            edit.setOnClickListener { DialogCreator.editCard(context, card) }
+            edit.setOnClickListener { EditCard(context, card) }
             edit.setOnLongClickListener { context.toast(R.string.edit_card); true }
 
             if (todoList) {

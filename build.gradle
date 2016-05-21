@@ -6,9 +6,17 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+    }
+    ext {
+        anko_version = '0.8.3'
+        kotlin_version = '1.0.2'
+        okhttp_version = '3.2.0'
+        retrofit_version = '2.0.2'
+        rxandroid_version = '1.2.0'
+        rxjava_version = '1.1.5'
+        support_version = '23.4.0'
     }
 }
 
