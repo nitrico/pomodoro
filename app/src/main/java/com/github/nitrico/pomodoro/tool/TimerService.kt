@@ -2,9 +2,9 @@ package com.github.nitrico.pomodoro.tool
 
 import android.app.Service
 import android.content.Intent
+import com.github.nitrico.pomodoro.App
 import com.github.nitrico.pomodoro.action.timer.*
 import com.github.nitrico.pomodoro.data.TrelloCard
-import org.jetbrains.anko.toast
 
 class TimerService : Service() {
 
@@ -16,12 +16,12 @@ class TimerService : Service() {
         const val ACTION_STOP = 1
         const val ACTION_PAUSE = 2
         const val ACTION_RESUME = 3
-        const val ACTION_RESET = 4 // ??
     }
 
-    private lateinit var timer: Timer
     private lateinit var card: TrelloCard
+    private var timer: Timer? = null
     private var time: Long = 0
+    private var isBreak: Boolean = false
 
     override fun onBind(intent: Intent?) = null
 
@@ -32,10 +32,9 @@ class TimerService : Service() {
         }
         when (intent.extras.getInt(KEY_ACTION)) {
             ACTION_START  -> start(intent)
+            ACTION_PAUSE  -> timer?.pause()
+            ACTION_RESUME -> timer?.resume()
             ACTION_STOP   -> stop()
-            ACTION_PAUSE  -> pause()
-            ACTION_RESUME -> resume()
-            ACTION_RESET  -> reset()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -43,36 +42,24 @@ class TimerService : Service() {
     private fun start(intent: Intent) {
         card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
         time = intent.extras.getLong(KEY_TIME)
+        if (time != App.TIME_POMODORO) isBreak = true
 
         timer = object : Timer(time * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 Tick(time, millisUntilFinished)
             }
             override fun onFinish() {
-                toast("onFinish")
+                val timeToAdd = if (isBreak) 0 else time
+                Finish(card, timeToAdd)
+                stopSelf()
             }
         }
-        timer.start()
-        toast("Start")
+        timer?.start()
     }
 
     private fun stop() {
-        toast("Stop")
-    }
-
-    private fun pause() {
-        timer.pause()
-        toast("Pause")
-    }
-
-    private fun resume() {
-        timer.resume()
-        toast("Resume")
-    }
-
-    private fun reset() {
-        Reset()
-        toast("Reset")
+        timer?.cancel()
+        stopSelf()
     }
 
 }

@@ -4,7 +4,7 @@ import com.github.nitrico.flux.dispatcher.Dispatcher
 
 open class Action {
 
-    // estaria bien implementar un toString guapante
+    override fun toString() = javaClass.simpleName
 
     protected fun postAction() = Dispatcher.post(this)
     protected fun postError(throwable: Throwable) = Dispatcher.post(ErrorAction(this, throwable))

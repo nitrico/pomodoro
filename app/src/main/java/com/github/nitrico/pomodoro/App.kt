@@ -2,7 +2,6 @@ package com.github.nitrico.pomodoro
 
 import android.app.Application
 import android.graphics.Typeface
-import android.support.v7.app.AppCompatDelegate
 import com.github.nitrico.flux.Flux
 import com.github.nitrico.pomodoro.tool.Cache
 
@@ -18,7 +17,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         mocharyTypeface = Typeface.createFromAsset(assets, "fonts/Mochary.ttf")
 
         Flux.init(this)

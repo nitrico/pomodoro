@@ -10,6 +10,7 @@ import android.webkit.WebViewClient
 import com.github.nitrico.flux.action.Action
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.data.Trello
+import com.github.nitrico.pomodoro.tool.setTaskDescription
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.async
 import org.jetbrains.anko.startActivity
@@ -45,6 +46,7 @@ class LogIn(private val context: Context) : Action() {
             setContentView(R.layout.activity_login)
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            setTaskDescription(R.drawable.ic_main)
 
             // JavaScript is needed to handle buttons clicks on Trello login page
             webview.settings.javaScriptEnabled = true

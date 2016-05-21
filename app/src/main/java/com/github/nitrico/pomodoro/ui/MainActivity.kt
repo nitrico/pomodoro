@@ -57,6 +57,7 @@ class MainActivity : FluxActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         appTitle.typeface = App.mocharyTypeface
+        setTaskDescription(R.drawable.ic_main)
 
         // initialize ViewPager and tabs
         pager.offscreenPageLimit = 2
@@ -173,7 +174,7 @@ class MainActivity : FluxActivity() {
 
 
     private inner class TabsAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
-        private val titles by stringsFromArrayRes(R.array.titles)
+        private val titles = resources.getStringArray(R.array.titles)
         override fun getCount() = 3
         override fun getPageTitle(position: Int) = titles[position]
         override fun getItem(position: Int) = ListFragment.newInstance(position)

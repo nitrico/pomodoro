@@ -9,8 +9,8 @@ interface ViewDispatch {
     fun register() = Dispatcher.registerView(this)
     fun unregister() = Dispatcher.unregisterView(this)
 
-    fun getStores(): List<Store>
     fun getPauseableStores(): List<Store> = emptyList()
+    fun getStores(): List<Store>
 
     fun onStoreChanged(change: StoreChange)
     fun onError(error: ErrorAction)

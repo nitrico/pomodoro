@@ -10,7 +10,10 @@ import android.view.ViewGroup
 import com.github.nitrico.flux.action.ErrorAction
 import com.github.nitrico.flux.store.StoreChange
 import com.github.nitrico.pomodoro.R
+import com.github.nitrico.pomodoro.action.timer.Finish
+import com.github.nitrico.pomodoro.action.timer.Stop
 import com.github.nitrico.pomodoro.action.trello.*
+import com.github.nitrico.pomodoro.store.TimerStore
 import com.github.nitrico.pomodoro.store.TrelloStore
 import com.github.nitrico.pomodoro.tool.dp
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
@@ -25,7 +28,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
-    override fun getStores() = MainActivity.stores
+    override fun getStores() = listOf(TrelloStore, TimerStore)
 
     private lateinit var adapter: CardsAdapter
     private var listType = -1
@@ -85,6 +88,10 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
                 is LogOut -> adapter.setItems(emptyList())
                 is AddTodo -> if (listType == 0) getCards()
                 is GetCards -> setItems()
+            }
+            TimerStore -> when (change.action) {
+                is Stop,
+                is Finish -> getCards()
             }
         }
     }

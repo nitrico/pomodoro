@@ -6,6 +6,8 @@ import com.github.nitrico.flux.dispatcher.StoreDispatch
 
 abstract class Store : StoreDispatch {
 
+    override fun toString() = javaClass.simpleName
+
     protected fun postChange(action: Action) = Dispatcher.post(StoreChange(this, action))
 
     fun register() = Dispatcher.registerStore(this)

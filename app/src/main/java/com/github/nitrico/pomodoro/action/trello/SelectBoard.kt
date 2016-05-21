@@ -20,8 +20,11 @@ class SelectBoard(
                 .items(TrelloStore.boardNames)
                 .itemsCallbackSingleChoice(current, { dialog, itemView, which, text ->
 
-                    board = TrelloStore.boards[which]
-                    postAction()
+                    // do not change if selected is the current one
+                    if (which != current) {
+                        board = TrelloStore.boards[which]
+                        postAction()
+                    }
                     true
 
                 })

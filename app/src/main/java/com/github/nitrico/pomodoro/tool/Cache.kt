@@ -34,20 +34,23 @@ object Cache {
      * Increment the pomodoro counter and add 25 minutes to the total time
      * of the card whose id is provided as an argument
      */
-    fun addPomodoro(cardId: String) {
+    /*fun addPomodoro(cardId: String) {
         val done = doIfContained(cardId) {
             pomodoros++
             seconds += App.TIME_POMODORO
         }
         if (!done) list.add(CardData(cardId, 1, App.TIME_POMODORO))
         save()
-    }
+    }*/
 
     fun addTime(cardId: String, secondsToAdd: Long) {
+        val pomodoro = secondsToAdd == App.TIME_POMODORO
+
         val done = doIfContained(cardId) {
             seconds += secondsToAdd
+            if (pomodoro) pomodoros++
         }
-        if (!done) list.add(CardData(cardId, 0, secondsToAdd))
+        if (!done) list.add(CardData(cardId, if (pomodoro) 1 else 0, secondsToAdd))
         save()
     }
 

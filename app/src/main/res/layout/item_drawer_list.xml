@@ -1,10 +1,10 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/name"
@@ -28,8 +28,7 @@
         android:layout_alignParentEnd="true"
         android:padding="12dp"
         android:background="?selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_menu"
-        android:tint="#DDD"
-        android:contentDescription="@string/desc_icon_drag" />
+        android:contentDescription="@string/desc_icon_drag"
+        app:srcCompat="@drawable/ic_drag" />
 
 </RelativeLayout>

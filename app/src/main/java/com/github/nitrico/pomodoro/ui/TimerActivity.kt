@@ -1,6 +1,5 @@
 package com.github.nitrico.pomodoro.ui
 
-import android.content.*
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,9 +10,10 @@ import com.github.nitrico.pomodoro.App
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.action.timer.*
 import com.github.nitrico.pomodoro.action.trello.AddComment
+import com.github.nitrico.pomodoro.action.trello.MoveCard
 import com.github.nitrico.pomodoro.data.TrelloCard
 import com.github.nitrico.pomodoro.store.TimerStore
-import com.github.nitrico.pomodoro.tool.Cache
+import com.github.nitrico.pomodoro.store.TrelloStore
 import com.github.nitrico.pomodoro.tool.*
 import kotlinx.android.synthetic.main.activity_timer.*
 import org.jetbrains.anko.toast
@@ -33,9 +33,9 @@ class TimerActivity : FluxActivity() {
     private val playIcon by lazy { resources.getDrawable(R.drawable.ic_play) }
     private val pauseIcon by lazy { resources.getDrawable(R.drawable.ic_pause) }
 
+    private lateinit var stopButton: MenuItem
+
     private lateinit var card: TrelloCard
-    private var pomodoroCompleted = false
-    private var pomodoroSeconds: Long = 0
 
     override fun getStores() = stores
 
@@ -47,6 +47,8 @@ class TimerActivity : FluxActivity() {
         setFullScreenLayout()
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        setTaskDescription(R.drawable.ic_main)
+
         layout.setPadding(0, 0, 0, navigationBarHeight)
         card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
 
@@ -66,16 +68,18 @@ class TimerActivity : FluxActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.timer, menu)
+        stopButton = menu.findItem(R.id.stop)
+        stopButton.isVisible = false
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> { stop(true); true }
-        R.id.stop -> { stop(false); true }
+        android.R.id.home -> { stopTimer(true); true }
+        R.id.stop -> { stopTimer(); true }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() = stop(true)
+    override fun onBackPressed() = stopTimer(true)
 
     override fun onError(error: ErrorAction) = toast("ERROR: " +error.throwable.message)
 
@@ -85,36 +89,36 @@ class TimerActivity : FluxActivity() {
                 is Tick -> onTick()
                 is Resume -> fab.setImageDrawable(pauseIcon)
                 is Start -> fab.setImageDrawable(pauseIcon)
-                is StartPomodoro -> fab.setImageDrawable(pauseIcon)
                 is Pause -> fab.setImageDrawable(playIcon)
-                is Stop -> fab.setImageDrawable(playIcon)
+                is Stop -> stopped()
+                is Finish -> onFinish()
             }
         }
     }
 
-    private fun onTick() {
-        val current = TimerStore.current
-        progress.setValue(current.toFloat())
-        time.text = (card.seconds + current).toTimeString()
-        text.text = current.toTimeString()
+    private fun stopTimer(andFinish: Boolean = false) {
+        if (TimerStore.isBreak) fab.show()
+
+        Stop(this, card)
+        if (andFinish) finish()
     }
 
-    private fun startTimer(seconds: Long, isBreak: Boolean) {
-        if (isBreak) fab.hide()
-        //else Trello.moveCardToDoingList(card.id)
-        val max = seconds
-        progress.max = max.toFloat()
-        StartPomodoro(this, card)
-    }
-
-    private fun onPomodoroCompleted() {
-        pomodoroCompleted = true
-        progress.setValue(progress.max)
-        progress.setValue(0f)
-        Cache.addPomodoro(card.id)
-        text.text = "Pomodoro completed"
+    private fun stopped() {
+        stopButton.isVisible = TimerStore.current != 0.toLong() && !TimerStore.isBreak
         fab.setImageDrawable(playIcon)
-        nextAction {
+        progress.setValue(0f)
+        text.text = App.TIME_POMODORO.toTimeString()
+    }
+
+    private fun onFinish() {
+        progress.setValue(0f)
+        fab.show()
+        fab.setImageDrawable(playIcon)
+        text.text = App.TIME_POMODORO.toTimeString()
+        stopButton.isVisible = false
+        pomodoros.text = card.pomodoros.toString()
+
+        if (!TimerStore.isBreak) nextAction {
             when (it) {
                 ACTION_SHORT_BREAK -> startTimer(App.TIME_SHORT_BREAK, true)
                 ACTION_LONG_BREAK -> startTimer(App.TIME_LONG_BREAK, true)
@@ -124,35 +128,31 @@ class TimerActivity : FluxActivity() {
                 }
                 ACTION_DONE -> {
                     val comment = "${card.pomodoros} pomodoros, ${card.seconds.toTimeString()} total spent"
-                    AddComment(this, card.id, comment)
-                    //Trello.addCommentToCard(card.id, comment)
-                    //Trello.moveCardToDoneList(card.id)
+                    AddComment(card.id, comment)
+                    MoveCard(card.id, TrelloStore.doneListId!!)
                 }
             }
         }
-        // bottom sheet dialog
-        //val f = BreakDialogFragment()
-        //f.show(supportFragmentManager, resources.getString(R.string.next_action))
-        //f.view?.setPadding(0, 0,  0, navigationBarHeight)
     }
 
-    private fun onBreakCompleted() {
-        progress.setValue(progress.max)
-        progress.setValue(0f)
-        text.text = "Break completed"
-        fab.show()
-        fab.setImageDrawable(playIcon)
+    private fun onTick() {
+        val current = TimerStore.current
+        progress.max = TimerStore.total.toFloat()
+        progress.setValue(current.toFloat())
+        text.text = current.toTimeString()
+        if (!TimerStore.isBreak) time.text = (card.seconds + current).toTimeString()
     }
 
-    private fun stop(andFinish: Boolean = false) {
-        stopService(Intent(this, TimerService::class.java))
+    private fun startTimer(seconds: Long, isBreak: Boolean) {
+        stopButton.isVisible = true
+        if (isBreak) fab.hide()
+        //else Trello.moveCardToDoingList(card.id)
+
+        val max = seconds
+        progress.max = max.toFloat()
         progress.setValue(0f)
-        //running = false
-        fab.setImageDrawable(playIcon)
-        text.text = App.TIME_POMODORO.toTimeString()
-        if (pomodoroSeconds != 0.toLong() && !pomodoroCompleted) Cache.addTime(card.id, pomodoroSeconds)
-        pomodoroSeconds = 0
-        if (andFinish) finish()
+
+        Start(this, card,  seconds)
     }
 
     private fun nextAction(callback: ((Int) -> Unit)? = null) = MaterialDialog.Builder(this)

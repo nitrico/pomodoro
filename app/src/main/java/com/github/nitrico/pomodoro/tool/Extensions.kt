@@ -1,20 +1,18 @@
 package com.github.nitrico.pomodoro.tool
 
+import android.annotation.TargetApi
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
+import android.graphics.BitmapFactory
 import android.os.Build
-import android.support.annotation.ArrayRes
-import android.support.annotation.ColorInt
-import android.support.annotation.ColorRes
-import android.support.annotation.LayoutRes
+import android.support.annotation.*
 import android.support.design.widget.Snackbar
-import android.support.design.widget.TabLayout
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewConfiguration
@@ -30,6 +28,8 @@ fun consume(f: () -> Unit): Boolean {
     f()
     return true
 }
+
+fun Long.toTwoDigitsString() = String.format("%02d", this)
 
 fun Long.toTimeString(): String {
     val MINUTE: Long = 60
@@ -48,69 +48,31 @@ fun Long.toTimeString(): String {
     }
 }
 
-fun Long.toTwoDigitsString() = String.format("%02d", this)
-
 val Int.dp: Int // dip to px conversion
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5).toInt()
 
-val Context.isKitkatOrHigher: Boolean
-    get() = Build.VERSION.SDK_INT >= 19
-
-val Context.isLollipopOrHigher: Boolean
-    get() = Build.VERSION.SDK_INT >= 21
-
 val Context.isPortrait: Boolean
     get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+val Context.primaryColor: Int
+    @ColorInt get() {
+        val typedValue = TypedValue()
+        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        return typedValue.data
+    }
 
 fun Activity.setFullScreenLayout() {
     window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 }
 
-
-operator fun TabLayout.get(position: Int): TabLayout.Tab = getTabAt(position)!!
-
-fun TabLayout.forEach(func: (TabLayout.Tab) -> Unit) {
-    for (i in 0..tabCount-1) func(get(i))
-}
-
-fun TabLayout.setIcons(icons: List<Drawable>) {
-    for (i in 0..tabCount-1) get(i).icon = icons[i]
-    tint()
-}
-
-var Drawable.tint: Int
-    @ColorInt get() = tint
-    @ColorInt set(value) {
-        if (Build.VERSION.SDK_INT >= 21) setTint(value)
-        else DrawableCompat.setTint(DrawableCompat.wrap(this), value)
-    }
-
-fun TabLayout.tint(selectedPosition: Int = 0,
-                   selectedColor: Int = context.colorRes(R.color.white),
-                   @ColorRes defaultColor: Int = R.color.whiteTrans) {
-    forEach { it.icon?.tint = context.colorRes(defaultColor) }
-    get(selectedPosition).icon?.tint = selectedColor
-}
-
-@ColorInt fun Context.colorRes(@ColorRes id: Int): Int {
-    if (Build.VERSION.SDK_INT >= 23) getColor(id)
-    @Suppress("deprecation") return resources.getColor(id)
-}
-
-
-///// RESOURCES /////
-
-fun Context.stringsFromArrayRes(@ArrayRes arrayResId: Int): Lazy<List<String>> = lazy {
-    resources.getStringArray(arrayResId).toList()
-}
-
-fun Context.drawablesFromArrayRes(@ArrayRes id: Int): List<Drawable> {
-    val array = resources.obtainTypedArray(id)
-    val list = mutableListOf<Drawable>()
-    for (i in 0..array.length()-1) list.add(array.getDrawable(i))
-    array.recycle()
-    return list
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+fun Activity.setTaskDescription(@DrawableRes iconRes: Int = R.mipmap.ic_launcher,
+                                @ColorInt color: Int = primaryColor) {
+    if (Build.VERSION.SDK_INT < 21) return
+    val bitmap = BitmapFactory.decodeResource(resources, iconRes)
+    setTaskDescription(ActivityManager.TaskDescription(null, bitmap, color))
+    bitmap.recycle()
 }
 
 

@@ -32,12 +32,12 @@ internal object Dispatcher {
     }
 
     internal fun unregisterStore(store: StoreDispatch) {
-        unsubscribeFromActions(store)
+        unsubscribeToActions(store)
     }
 
     internal fun unregisterView(view: ViewDispatch) {
-        unsubscribeFromChanges(view)
-        unsubscribeFromErrors(view)
+        unsubscribeToChanges(view)
+        unsubscribeToErrors(view)
     }
 
     @Synchronized internal fun unregisterAll() {
@@ -90,7 +90,7 @@ internal object Dispatcher {
         }
     }
 
-    private fun unsubscribeFromActions(store: StoreDispatch) {
+    private fun unsubscribeToActions(store: StoreDispatch) {
         val subscription = actions[store]
         if (subscription != null && !subscription.isUnsubscribed) {
             subscription.unsubscribe()
@@ -99,7 +99,7 @@ internal object Dispatcher {
         }
     }
 
-    private fun unsubscribeFromErrors(view: ViewDispatch) {
+    private fun unsubscribeToErrors(view: ViewDispatch) {
         val subscription = errors[view]
         if (subscription != null && !subscription.isUnsubscribed) {
             subscription.unsubscribe()
@@ -107,7 +107,7 @@ internal object Dispatcher {
         }
     }
 
-    private fun unsubscribeFromChanges(view: ViewDispatch) {
+    private fun unsubscribeToChanges(view: ViewDispatch) {
         val subscription = changes[view]
         if (subscription != null && !subscription.isUnsubscribed) {
             subscription.unsubscribe()
