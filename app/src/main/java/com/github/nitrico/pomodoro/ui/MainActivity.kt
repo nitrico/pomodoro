@@ -25,35 +25,24 @@ import org.jetbrains.anko.toast
 
 class MainActivity : FluxActivity() {
 
-    companion object {
-        val stores = listOf(TrelloStore)
-    }
-
     private val listChangeListener = object : GestureAdapter.OnDataChangeListener<TrelloList> {
+        override fun onItemRemoved(item: TrelloList, position: Int) { /* can't happen */ }
         override fun onItemReorder(item: TrelloList, fromPos: Int, toPos: Int) {
             ReorderLists(adapter.data[0].id, adapter.data[1].id, adapter.data[2].id)
         }
-        override fun onItemRemoved(item: TrelloList, position: Int) { }
     }
 
     private lateinit var adapter: DrawerListAdapter
     private var currentBoardIndex = 0
 
-    override fun getStores() = stores
+    override fun getStores() = listOf(TrelloStore)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        TrelloStore.init(this)
-
-        // initialize Toolbar
-        /*if (Build.VERSION.SDK_INT >= 21) {
-            window.statusBarColor = resources.getColor(R.color.statusBar)
-        }*/
         setFullScreenLayout()
-        //window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         appTitle.typeface = App.mocharyTypeface
@@ -65,7 +54,6 @@ class MainActivity : FluxActivity() {
         tabs.setupWithViewPager(pager)
 
         // initialize settings drawer
-        boardSelector.setOnClickListener { SelectBoard(this@MainActivity, currentBoardIndex) }
         adapter = DrawerListAdapter()
         adapter.setDataChangeListener(listChangeListener)
         drawerList.layoutManager = LinearLayoutManager(this)
@@ -75,12 +63,15 @@ class MainActivity : FluxActivity() {
                 .setManualDragEnabled(true)
                 .setSwipeEnabled(false)
                 .build()
+        boardSelector.setOnClickListener { SelectBoard(this@MainActivity, currentBoardIndex) }
         connect.setOnClickListener { if (TrelloStore.logged) LogOut() else LogIn(this) }
-        setupConnectButton(false)
 
-        // initialize Trello session
-        if (savedInstanceState == null && TrelloStore.user == null) LogIn(this)
-        else setupAccount()
+        if (savedInstanceState == null) TrelloStore.init(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupAccount()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -90,8 +81,7 @@ class MainActivity : FluxActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> { drawer.toggle(); true }
-        R.id.add -> {
-            AddTodo(this); true }
+        R.id.add -> { AddTodo(this); true }
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -101,44 +91,39 @@ class MainActivity : FluxActivity() {
     }
 
     override fun onError(error: ErrorAction) {
-        toast(error.throwable.message ?: "Unknown error in action: " +error.action)
+        toast("Error in ${error.action}: ${error.throwable.message}")
     }
 
     override fun onStoreChanged(change: StoreChange) {
         when (change.store) {
             TrelloStore -> when (change.action) {
-                is GetUser -> setupAccount()
+                is GetUser, is LogOut -> setupAccount()
                 is SelectBoard -> setupBoard(TrelloStore.board!!)
-                is LogOut -> onLogOut()
             }
         }
     }
 
     private fun setupAccount() {
-        setupProfile(TrelloStore.user)
-        setupConnectButton(true)
-        drawerConfig.show()
-
-        // setup board selector
-        boardName.text = TrelloStore.board?.name
-        currentBoardIndex = TrelloStore.boards.indexOf(TrelloStore.board)
-
-        // setup lists selector
-        adapter.data = TrelloStore.lists
-        if (TrelloStore.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
-
-        //splash.hide()
+        setupProfile(TrelloStore.logged, TrelloStore.user)
+        if (TrelloStore.logged) {
+            splash.hide()
+            drawerConfig.show()
+            // setup board selector
+            boardName.text = TrelloStore.board?.name
+            currentBoardIndex = TrelloStore.boards.indexOf(TrelloStore.board)
+            // setup lists selector
+            adapter.data = TrelloStore.lists
+            if (TrelloStore.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
+        }
+        else {
+            splash.show()
+            drawerConfig.hide()
+        }
     }
 
-    private fun onLogOut() {
-        setupProfile(null)
-        setupConnectButton(false)
-        drawerConfig.hide()
-        //splash.show()
-    }
-
-    private fun setupProfile(user: TrelloMember?) {
-        if (user != null) {
+    private fun setupProfile(logged: Boolean, user: TrelloMember?) {
+        splash.hide()
+        if (logged && user != null) {
             profile.show()
             if (user.avatar != null) {
                 avatar.show()
@@ -151,9 +136,7 @@ class MainActivity : FluxActivity() {
             profile.hide()
             avatar.hide()
         }
-    }
-
-    private fun setupConnectButton(logged: Boolean) {
+        // setup connect button
         val textRes = if (logged) R.string.logout else R.string.login
         val bgColorRes = if (logged) R.color.primary else R.color.trello
         connect.setText(textRes)
@@ -163,11 +146,9 @@ class MainActivity : FluxActivity() {
     private fun setupBoard(board: TrelloBoard) {
         boardName.text = board.name
         currentBoardIndex = TrelloStore.boards.indexOf(board)
-
         // update drawer list
         adapter.data = board.lists
         if (TrelloStore.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
-
         // reset tabs
         pager.adapter = TabsAdapter(supportFragmentManager)
     }
@@ -178,6 +159,7 @@ class MainActivity : FluxActivity() {
         override fun getCount() = 3
         override fun getPageTitle(position: Int) = titles[position]
         override fun getItem(position: Int) = ListFragment.newInstance(position)
+        //override fun getPageWidth(position: Int) = 0.333f
     }
 
 }

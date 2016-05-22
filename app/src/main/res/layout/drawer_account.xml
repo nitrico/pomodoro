@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin"
+    android:padding="16dp"
     android:background="?android:windowBackground"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    tools:showIn="@layout/drawer" >
 
     <ImageView
         android:id="@+id/avatar"
@@ -48,8 +49,8 @@
             android:id="@+id/connect"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:paddingLeft="@dimen/margin"
-            android:paddingRight="@dimen/margin"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:gravity="center_vertical"
             android:background="?colorPrimary"
             android:foreground="?selectableItemBackground"

@@ -9,12 +9,13 @@
     <dimen name="tabs_height">48dp</dimen>
     <dimen name="app_bar_height">104dp</dimen><!--status_bar_height+action_bar_height+tabs_height-->
 
-    <dimen name="margin">16dp</dimen>
-    <dimen name="margin_half">8dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="recycler_padding">8dp</dimen>
 
     <dimen name="title_textSize">40sp</dimen>
     <dimen name="avatar_size">120dp</dimen>
     <dimen name="timer_size">300dp</dimen>
     <dimen name="timer_textSize">32sp</dimen>
+
 
 </resources>

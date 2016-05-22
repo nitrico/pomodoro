@@ -20,7 +20,7 @@ class App : Application() {
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         mocharyTypeface = Typeface.createFromAsset(assets, "fonts/Mochary.ttf")
 
-        Flux.init(this)
+        Flux.init(this, true)
         Cache.init(this)
     }
 

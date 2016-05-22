@@ -13,16 +13,13 @@ import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.github.nitrico.pomodoro.R
 
 /**
- * Call the function received as a parameter and return true
+ * Execute the function received as a parameter and return true
  */
 fun consume(f: () -> Unit): Boolean {
     f()
@@ -62,8 +59,12 @@ val Context.primaryColor: Int
     }
 
 fun Activity.setFullScreenLayout() {
-    window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+    window.decorView.systemUiVisibility= window.decorView.systemUiVisibility or
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    // unset translucent status for Lollipop or higher so status bar color can be modified
+    if (Build.VERSION.SDK_INT >= 21) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    }
 }
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -76,10 +77,12 @@ fun Activity.setTaskDescription(@DrawableRes iconRes: Int = R.mipmap.ic_launcher
 }
 
 
+
 ///// VIEW /////
 
 fun View.show() { visibility = View.VISIBLE }
 fun View.hide() { visibility = View.GONE }
+fun View.showIfAndHideIfNot(condition: Boolean) = if (condition) show() else hide()
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -108,10 +111,10 @@ fun ImageView.load(url: String, circular: Boolean = false) = ImageLoader.load(th
 ///// DRAWER LAYOUT /////
 
 private const val DEFAULT_DRAWER_GRAVITY = GravityCompat.START
-val DrawerLayout.isOpen: Boolean get() = isDrawerOpen(DEFAULT_DRAWER_GRAVITY)
-fun DrawerLayout.open() = openDrawer(DEFAULT_DRAWER_GRAVITY)
-fun DrawerLayout.close() = closeDrawer(DEFAULT_DRAWER_GRAVITY)
-fun DrawerLayout.toggle() = if (isOpen) close() else open()
+val DrawerLayout?.isOpen: Boolean get() = this?.isDrawerOpen(DEFAULT_DRAWER_GRAVITY) ?: true
+fun DrawerLayout?.open() = this?.openDrawer(DEFAULT_DRAWER_GRAVITY)
+fun DrawerLayout?.close() = this?.closeDrawer(DEFAULT_DRAWER_GRAVITY)
+fun DrawerLayout?.toggle() = if (isOpen) close() else open()
 
 
 

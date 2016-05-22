@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:paddingTop="@dimen/status_bar_height"
-    android:background="@color/white"
+    android:background="?android:windowBackground"
     android:orientation="vertical" >
 
     <include layout="@layout/drawer_account" />

@@ -64,6 +64,10 @@ class TimerActivity : FluxActivity() {
                 else Resume(this)
             }
         }
+
+        TimerAction {
+            val no = isBreak
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -26,10 +26,13 @@
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-            <View
+            <TextView
                 android:id="@+id/splash"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="?colorPrimary"
+                android:text="Logging..." />
         </FrameLayout>
 
     </LinearLayout>

@@ -15,7 +15,6 @@ import com.github.nitrico.pomodoro.action.timer.Stop
 import com.github.nitrico.pomodoro.action.trello.*
 import com.github.nitrico.pomodoro.store.TimerStore
 import com.github.nitrico.pomodoro.store.TrelloStore
-import com.github.nitrico.pomodoro.tool.dp
 import com.github.nitrico.pomodoro.tool.navigationBarHeight
 import kotlinx.android.synthetic.main.fragment_list.*
 import org.jetbrains.anko.support.v4.toast
@@ -28,18 +27,21 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
+    private val tablet: Boolean by lazy { activity.resources.getBoolean(R.bool.tablet) }
+    private val landscape: Boolean by lazy { activity.resources.getBoolean(R.bool.landscape) }
+    private val padding: Int by lazy { activity.resources.getDimension(R.dimen.recycler_padding).toInt() }
+    private val listType: Int by lazy { arguments.getInt(KEY_LIST_TYPE, -1) }
+
     override fun getStores() = listOf(TrelloStore, TimerStore)
 
-    private lateinit var adapter: CardsAdapter
-    private var listType = -1
-
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
+        retainInstance = true
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        listType = arguments.getInt(KEY_LIST_TYPE, -1)
+        list.setPadding(padding, padding, padding, padding + activity.navigationBarHeight)
 
         // initialize SwipeRefreshLayout
         with(layout) {
@@ -47,29 +49,13 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
             setColorSchemeResources(android.R.color.white)
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
-
-        // setup RecyclerView paddings
-        val tablet = activity.resources.getBoolean(R.bool.tablet)
-        if (tablet) {
-            val dp72 = 72.dp
-            list.setPadding(dp72, dp72, dp72, dp72 + activity.navigationBarHeight)
-        } else {
-            val dp8 = 8.dp
-            list.setPadding(dp8, dp8, dp8, dp8 + activity.navigationBarHeight)
-        }
-
         // columns
-        val landscape = activity.resources.getBoolean(R.bool.landscape)
         val cols = getColumnsNumber(tablet, landscape)
         if (cols == 1) list.layoutManager = LinearLayoutManager(activity)
         else list.layoutManager = StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL)
 
-        adapter = CardsAdapter(emptyList(), listType == 0)
-        list.adapter = adapter
-
         // set items
-        if (savedInstanceState == null) GetCards()
-        else setItems()
+        if (savedInstanceState == null) GetCards() else setItems()
     }
 
     override fun onError(error: ErrorAction) {
@@ -85,7 +71,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
                 is DeleteCard,
                 is AddComment,
                 is LogIn.Success -> getCards()
-                is LogOut -> adapter.setItems(emptyList())
+                is LogOut -> setItems()
                 is AddTodo -> if (listType == 0) getCards()
                 is GetCards -> setItems()
             }
@@ -112,17 +98,22 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun setItems() {
-        when (listType) {
-            0 -> adapter.setItems(TrelloStore.todoCards)
-            1 -> adapter.setItems(TrelloStore.doingCards)
-            2 -> adapter.setItems(TrelloStore.doneCards)
+        val items = when (listType) {
+            0 -> TrelloStore.todoCards
+            1 -> TrelloStore.doingCards
+            2 -> TrelloStore.doneCards
+            else -> emptyList()
         }
+        if (list.adapter == null) list.adapter = CardsAdapter(items, listType == 0)
+        else (list.adapter as CardsAdapter).setItems(items)
+
         layout.isRefreshing = false
     }
 
     private fun getColumnsNumber(tablet: Boolean, landscape: Boolean): Int {
-        return if (tablet) { if (landscape) 4 else 3 }
+        return if (tablet) { if (landscape) 2 else 3 }
         else { if (landscape) 2 else 1 }
+        //return 1
     }
 
 }

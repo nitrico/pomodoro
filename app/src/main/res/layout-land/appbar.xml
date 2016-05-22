@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/primary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:elevation="4dp" >
+    app:elevation="@dimen/app_bar_elevation" >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -26,8 +26,8 @@
             android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/margin_half"
-            android:paddingRight="@dimen/margin"
+            android:paddingLeft="8dp"
+            android:paddingRight="16dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/title_textSize"
@@ -38,8 +38,8 @@
             android:id="@+id/tabs"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_half"
-            android:layout_marginRight="@dimen/margin_half"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             app:tabMode="scrollable"
             app:tabGravity="center"
             app:tabTextColor="#7FFF"

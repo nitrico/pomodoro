@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:showIn="@layout/drawer" >
 
     <LinearLayout
         android:id="@+id/boardSelector"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:paddingLeft="@dimen/margin"
-        android:paddingRight="@dimen/margin"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:background="?selectableItemBackground"
         android:orientation="horizontal" >
         <TextView
@@ -31,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="@dimen/margin"
+            android:layout_marginRight="16dp"
             android:textColor="?android:textColorPrimary"
             android:text="@string/select_board"
             android:maxLines="1"
@@ -98,8 +99,8 @@
             android:id="@+id/drawerList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/margin_half"
-            android:paddingBottom="@dimen/margin_half"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:clipToPadding="false"
             android:overScrollMode="never" />
     </LinearLayout>

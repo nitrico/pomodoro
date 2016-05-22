@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="?colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:elevation="4dp" >
+    app:elevation="@dimen/app_bar_elevation" >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -25,7 +25,7 @@
             android:id="@+id/appTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingRight="@dimen/margin_half"
+            android:paddingRight="8dp"
             android:paddingTop="2dp"
             android:gravity="center"
             android:textColor="@color/white"
