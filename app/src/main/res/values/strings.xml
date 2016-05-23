@@ -37,6 +37,7 @@
     <string name="break_completed">Break completed</string>
     <string name="pomodoro_time">Pomodoro time</string>
     <string name="pomodoro_completed">Pomodoro completed</string>
+    <string name="done_comment">%1$d pomodoros, %2$s total spent</string>
 
     <!-- Settings drawer -->
     <string name="login">Connect with Trello</string>

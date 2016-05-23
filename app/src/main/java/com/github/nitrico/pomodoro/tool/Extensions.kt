@@ -57,20 +57,25 @@ fun Activity.setTaskDescription(@DrawableRes iconRes: Int = R.mipmap.ic_launcher
 
 private fun Long.toTwoDigitsString() = String.format("%02d", this)
 
-fun Long.toTimeString(): String {
+fun Long.toTimeString(withUnits: Boolean = false): String {
     val MINUTE: Long = 60
     val HOUR: Long = 3600
-    if (this < MINUTE) return "${this}s"
+    if (this < MINUTE) {
+        if (withUnits) return "${this.toTwoDigitsString()}s"
+        else return "${this.toTwoDigitsString()}"
+    }
     else if (this < HOUR) {
         val minutes: Long = this / MINUTE
         val seconds: Long = this - (minutes * MINUTE)
-        return "${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+        if (withUnits) return "${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+        else return "${minutes.toTwoDigitsString()}:${seconds.toTwoDigitsString()}"
     }
     else {
         val hours: Long = this / HOUR
         val minutes: Long = (this - hours*HOUR) / MINUTE
         val seconds: Long = this - hours*HOUR - minutes*MINUTE
-        return "${hours}h:${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+        if (withUnits) return "${hours}h:${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+        else return "$hours:${minutes.toTwoDigitsString()}:${seconds.toTwoDigitsString()}"
     }
 }
 

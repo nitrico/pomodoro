@@ -53,7 +53,7 @@ class TimerActivity : FluxActivity() {
         progress.setInterpolator(LinearInterpolator())
         text.text = App.TIME_POMODORO.toTimeString()
         name.text = card.name
-        time.text = card.seconds.toTimeString()
+        time.text = card.seconds.toTimeString(true)
         pomodoros.text = card.pomodoros.toString()
 
         fab.setOnClickListener {
@@ -114,8 +114,8 @@ class TimerActivity : FluxActivity() {
                                 finish()
                             }
                             ACTION_DONE -> {
-                                val comment = "${card.pomodoros} pomodoros, " +
-                                        "${card.seconds.toTimeString()} total spent"
+                                val comment = getString(R.string.done_comment,
+                                        card.pomodoros, card.seconds.toTimeString(true))
                                 AddComment(card.id, comment)
                                 MoveCard(card.id, TrelloStore.doneListId!!)
                                 finish()
@@ -133,7 +133,7 @@ class TimerActivity : FluxActivity() {
         progress.max = TimerStore.total.toFloat()
         progress.setValue(current.toFloat())
         text.text = if (left != 0L) left.toTimeString() else App.TIME_POMODORO.toTimeString()
-        if (!TimerStore.isBreak) time.text = (card.seconds + current).toTimeString()
+        if (!TimerStore.isBreak) time.text = (card.seconds + current).toTimeString(true)
         fab.setImageDrawable(if (TimerStore.isRunning) pauseIcon else playIcon)
     }
 
