@@ -11,6 +11,7 @@ class App : Application() {
         const val TIME_POMODORO: Long = 25 * 60
         const val TIME_LONG_BREAK: Long = 15 * 60
         const val TIME_SHORT_BREAK: Long = 5 * 60
+
         lateinit var mocharyTypeface: Typeface
     }
 
