@@ -17,7 +17,6 @@ object TimerStore : Store() {
 
     var current: Long = 0; private set
     var total: Long = 0; private set
-    var left: Long = 0; private set
 
     override fun onAction(action: Action) {
         when (action) {
