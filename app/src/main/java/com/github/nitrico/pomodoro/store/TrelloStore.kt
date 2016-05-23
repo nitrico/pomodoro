@@ -7,6 +7,9 @@ import com.github.nitrico.flux.store.Store
 import com.github.nitrico.pomodoro.action.trello.*
 import com.github.nitrico.pomodoro.data.*
 
+/**
+ * Singleton object used to keep Trello account status
+ */
 object TrelloStore : Store() {
 
     private const val KEY_TOKEN = "KEY_TOKEN"

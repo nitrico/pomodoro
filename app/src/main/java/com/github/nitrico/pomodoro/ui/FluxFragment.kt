@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.github.nitrico.flux.dispatcher.ViewDispatch
 
+/**
+ * Base Fragment to use the Flux architecture
+ */
 abstract class FluxFragment : Fragment(), ViewDispatch {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.content.ContextCompat
 import com.github.nitrico.pomodoro.App
 import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.action.timer.*
@@ -90,8 +91,7 @@ class TimerService : Service() {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setTicker(title)
-                //.setSubText(text)
-                .setColor(resources.getColor(R.color.primary))
+                .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -106,7 +106,7 @@ class TimerService : Service() {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSubText(if (isBreak) "Break time" else "Pomodoro time")
-                .setColor(resources.getColor(R.color.primary))
+                .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setProgress(max, progress, false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)

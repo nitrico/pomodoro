@@ -6,6 +6,9 @@ import com.github.nitrico.pomodoro.App
 import com.github.nitrico.pomodoro.action.timer.*
 import com.github.nitrico.pomodoro.tool.Cache
 
+/**
+ * Singleton object used to keep the current timer status
+ */
 object TimerStore : Store() {
 
     var isBreak: Boolean = false; private set

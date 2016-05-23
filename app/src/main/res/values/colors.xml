@@ -4,9 +4,9 @@
     <color name="accent">@color/primary</color>
     <color name="primaryText">@color/grayDark</color>
     <color name="secondaryText">#727272</color>
-    <color name="divider">#D8D8D8</color> <!-- #4FFF #E2E2E2 -->
+    <color name="divider">#D8D8D8</color>
     <color name="statusBar">#1D000000</color>
-    <color name="windowBackground">#EDEDED</color> <!-- #F3F3F3 -->
+    <color name="windowBackground">#EDEDED</color>
 
     <color name="red">#C62828</color>
     <color name="trello">#026AA7</color>
@@ -14,7 +14,7 @@
     <color name="black">@android:color/black</color>
     <color name="grayDark">#FF555555</color>
     <color name="gray">#CCC</color>
-    <color name="grayTrans">#CCF4F4F4</color>
+    <color name="grayTrans">#CCF6F6F6</color>
     <color name="white">@android:color/white</color>
     <color name="whiteTrans">#9FFF</color>
 

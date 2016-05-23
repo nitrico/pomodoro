@@ -7,8 +7,6 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:divider">@color/divider</item>
         <item name="android:windowBackground">@color/windowBackground</item>
-
-        <!-- probar algo así como @bool/kitkatAndPortrait en translucentStatus -->
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">@bool/portrait</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/statusBar</item>
@@ -61,6 +59,5 @@
         <item name="android:padding">8dp</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
-
 
 </resources>

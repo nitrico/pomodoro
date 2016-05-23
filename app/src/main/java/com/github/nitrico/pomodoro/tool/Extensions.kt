@@ -9,7 +9,6 @@ import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.annotation.*
-import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.util.TypedValue
@@ -18,32 +17,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.github.nitrico.pomodoro.R
 
-/**
- * Execute the function received as a parameter and return true
- */
-fun consume(f: () -> Unit): Boolean {
-    f()
-    return true
-}
-
-fun Long.toTwoDigitsString() = String.format("%02d", this)
-
-fun Long.toTimeString(): String {
-    val MINUTE: Long = 60
-    val HOUR: Long = 3600
-    if (this < MINUTE) return "${this}s"
-    else if (this < HOUR) {
-        val minutes: Long = this / MINUTE
-        val seconds: Long = this - (minutes * MINUTE)
-        return "${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
-    }
-    else {
-        val hours: Long = this / HOUR
-        val minutes: Long = (this - hours*HOUR) / MINUTE
-        val seconds: Long = this - hours*HOUR - minutes*MINUTE
-        return "${hours}h:${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
-    }
-}
 
 val Int.dp: Int // dip to px conversion
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5).toInt()
@@ -78,6 +51,28 @@ fun Activity.setTaskDescription(@DrawableRes iconRes: Int = R.mipmap.ic_launcher
 
 
 
+///// TIME /////
+
+private fun Long.toTwoDigitsString() = String.format("%02d", this)
+
+fun Long.toTimeString(): String {
+    val MINUTE: Long = 60
+    val HOUR: Long = 3600
+    if (this < MINUTE) return "${this}s"
+    else if (this < HOUR) {
+        val minutes: Long = this / MINUTE
+        val seconds: Long = this - (minutes * MINUTE)
+        return "${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+    }
+    else {
+        val hours: Long = this / HOUR
+        val minutes: Long = (this - hours*HOUR) / MINUTE
+        val seconds: Long = this - hours*HOUR - minutes*MINUTE
+        return "${hours}h:${minutes.toTwoDigitsString()}m:${seconds.toTwoDigitsString()}s"
+    }
+}
+
+
 ///// VIEW /////
 
 fun View.show() { visibility = View.VISIBLE }
@@ -88,13 +83,7 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-fun View.setMargins(l: Int, t: Int, r: Int, b: Int) {
-    if (layoutParams is ViewGroup.MarginLayoutParams) {
-        val params = layoutParams as ViewGroup.MarginLayoutParams
-        params.setMargins(l, t, r, b)
-        requestLayout()
-    }
-}
+fun ImageView.load(url: String, circular: Boolean = false) = ImageLoader.load(this, url, circular)
 
 fun TextView.setTextOrHideView(string: String?) {
     if (string.isNullOrEmpty()) hide()
@@ -104,32 +93,15 @@ fun TextView.setTextOrHideView(string: String?) {
     }
 }
 
-fun ImageView.load(url: String, circular: Boolean = false) = ImageLoader.load(this, url, circular)
-
 
 
 ///// DRAWER LAYOUT /////
 
 private const val DEFAULT_DRAWER_GRAVITY = GravityCompat.START
-val DrawerLayout?.isOpen: Boolean get() = this?.isDrawerOpen(DEFAULT_DRAWER_GRAVITY) ?: true
+val DrawerLayout?.isOpen: Boolean get() = this?.isDrawerOpen(DEFAULT_DRAWER_GRAVITY) ?: false
 fun DrawerLayout?.open() = this?.openDrawer(DEFAULT_DRAWER_GRAVITY)
 fun DrawerLayout?.close() = this?.closeDrawer(DEFAULT_DRAWER_GRAVITY)
 fun DrawerLayout?.toggle() = if (isOpen) close() else open()
-
-
-
-///// SNACK BAR /////
-
-fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: (Snackbar.() -> Unit)? = null) {
-    val snack = Snackbar.make(this, message, length)
-    if (f != null) snack.f()
-    snack.show()
-}
-
-fun Snackbar.action(action: String, @ColorInt color: Int? = null, listener: (View) -> Unit) {
-    setAction(action, listener)
-    color?.let { setActionTextColor(color) }
-}
 
 
 

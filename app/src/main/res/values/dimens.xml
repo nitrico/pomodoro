@@ -3,7 +3,6 @@
     <bool name="portrait">true</bool>
     <bool name="landscape">false</bool>
     <bool name="tablet">false</bool>
-    <bool name="kitkat">false</bool>
 
     <dimen name="status_bar_height">0dp</dimen>
     <dimen name="action_bar_height">56dp</dimen>

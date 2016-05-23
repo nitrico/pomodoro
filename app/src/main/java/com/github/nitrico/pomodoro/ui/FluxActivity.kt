@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.github.nitrico.flux.dispatcher.ViewDispatch
 
+/**
+ * Base Activity to use the Flux architecture
+ */
 abstract class FluxActivity : AppCompatActivity(), ViewDispatch {
 
     override fun onCreate(savedInstanceState: Bundle?) {

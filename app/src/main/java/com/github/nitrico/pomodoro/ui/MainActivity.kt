@@ -18,7 +18,7 @@ import com.github.nitrico.pomodoro.tool.*
 import com.thesurix.gesturerecycler.GestureAdapter
 import com.thesurix.gesturerecycler.GestureManager
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.activity_main_appbar.*
 import kotlinx.android.synthetic.main.drawer_profile.*
 import kotlinx.android.synthetic.main.drawer_config.*
 import org.jetbrains.anko.toast
@@ -32,7 +32,7 @@ class MainActivity : FluxActivity() {
         }
     }
 
-    private lateinit var adapter: DrawerListAdapter
+    private val adapter = DrawerListAdapter()
     private var currentBoardIndex = 0
 
     override fun getStores() = listOf(TrelloStore)
@@ -54,7 +54,6 @@ class MainActivity : FluxActivity() {
         tabs.setupWithViewPager(pager)
 
         // initialize settings drawer
-        adapter = DrawerListAdapter()
         adapter.setDataChangeListener(listChangeListener)
         drawerList.layoutManager = LinearLayoutManager(this)
         drawerList.adapter = adapter
@@ -108,12 +107,7 @@ class MainActivity : FluxActivity() {
         if (TrelloStore.logged) {
             splash.hide()
             drawerConfig.show()
-            // setup board selector
-            boardName.text = TrelloStore.board?.name
-            currentBoardIndex = TrelloStore.boards.indexOf(TrelloStore.board)
-            // setup lists selector
-            adapter.data = TrelloStore.lists
-            if (TrelloStore.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
+            setupBoard(TrelloStore.board!!)
         }
         else {
             splash.show()
@@ -122,7 +116,6 @@ class MainActivity : FluxActivity() {
     }
 
     private fun setupProfile(logged: Boolean, user: TrelloMember?) {
-        splash.hide()
         if (logged && user != null) {
             profile.show()
             if (user.avatar != null) {
@@ -136,11 +129,8 @@ class MainActivity : FluxActivity() {
             profile.hide()
             avatar.hide()
         }
-        // setup connect button
-        val textRes = if (logged) R.string.logout else R.string.login
-        val bgColorRes = if (logged) R.color.primary else R.color.trello
-        connect.setText(textRes)
-        connect.setBackgroundResource(bgColorRes)
+        connect.setText(if (logged) R.string.logout else R.string.login)
+        connect.setBackgroundResource(if (logged) R.color.primary else R.color.trello)
     }
 
     private fun setupBoard(board: TrelloBoard) {
@@ -148,9 +138,7 @@ class MainActivity : FluxActivity() {
         currentBoardIndex = TrelloStore.boards.indexOf(board)
         // update drawer list
         adapter.data = board.lists
-        if (TrelloStore.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
-        // reset tabs
-        pager.adapter = TabsAdapter(supportFragmentManager)
+        if (board.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
     }
 
 
@@ -159,7 +147,6 @@ class MainActivity : FluxActivity() {
         override fun getCount() = 3
         override fun getPageTitle(position: Int) = titles[position]
         override fun getItem(position: Int) = ListFragment.newInstance(position)
-        //override fun getPageWidth(position: Int) = 0.333f
     }
 
 }

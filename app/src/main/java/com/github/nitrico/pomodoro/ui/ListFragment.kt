@@ -41,6 +41,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
 
         // poniendo estas condiciones arriba como lazy no se pierde el scroll al rotar, así sí
         // pero haciendo eso entonces no cambia el número de columnas al rotar :/
+        // probar a poner los items o el adapter o los dos como propiedades
         val padding = activity.resources.getDimension(R.dimen.recycler_padding).toInt()
         val landscape = activity.resources.getBoolean(R.bool.landscape)
         val tablet = activity.resources.getBoolean(R.bool.tablet)
@@ -89,11 +90,8 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        if (view != null && TrelloStore.logged && TrelloStore.listIds?.get(listType) != null) {
-            getCards()
-        } else {
-            layout.isRefreshing = false
-        }
+        if (TrelloStore.logged && TrelloStore.listIds?.get(listType) != null) getCards()
+        else layout.isRefreshing = false
     }
 
     private fun getCards() {
@@ -104,6 +102,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun setItems() {
+        layout.isRefreshing = false
         val items = when (listType) {
             0 -> TrelloStore.todoCards
             1 -> TrelloStore.doingCards
@@ -112,14 +111,11 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         }
         if (list.adapter == null) list.adapter = CardsAdapter(items, listType == 0)
         else (list.adapter as CardsAdapter).setItems(items)
-
-        layout.isRefreshing = false
     }
 
     private fun getColumnsNumber(tablet: Boolean, landscape: Boolean): Int {
         return if (tablet) { if (landscape) 2 else 3 }
         else { if (landscape) 2 else 1 }
-        //return 1
     }
 
 }

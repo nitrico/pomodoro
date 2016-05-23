@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 import com.github.nitrico.pomodoro.App
 
 /**
- * Singleton object used to save the pomodoros and total time expended on a card
+ * Singleton object used to save the pomodoros and total time expended for each card
  */
 object Cache {
 
@@ -16,10 +16,9 @@ object Cache {
 
 
     private const val KEY_JSON = "JSON"
-
-    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
     private lateinit var context: Context
-    private var list = mutableListOf<CardData>()
+    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+    private var data = mutableListOf<CardData>()
 
     /**
      * Initialize the Cache object
@@ -30,23 +29,33 @@ object Cache {
         load()
     }
 
+    /**
+     * Increment the time expended on a card
+     * It also increment the pomodoros count if the time to add is a Pomodoro
+     */
     fun addTime(cardId: String, secondsToAdd: Long) {
         val pomodoro = secondsToAdd == App.TIME_POMODORO
         val done = doIfContained(cardId) {
             seconds += secondsToAdd
             if (pomodoro) pomodoros++
         }
-        if (!done) list.add(CardData(cardId, if (pomodoro) 1 else 0, secondsToAdd))
+        if (!done) data.add(CardData(cardId, if (pomodoro) 1 else 0, secondsToAdd))
         save()
     }
 
+    /**
+     * Return the pomodoros amount expended for the card whose id is passed as an argument
+     */
     fun getPomodoros(cardId: String): Int {
-        list.forEach { if (it.id.equals(cardId)) return it.pomodoros }
+        data.forEach { if (it.id.equals(cardId)) return it.pomodoros }
         return 0
     }
 
+    /**
+     * Return the time in seconds expended for the card whose id is passes as an argument
+     */
     fun getTimeInSeconds(cardId: String): Long {
-        list.forEach { if (it.id.equals(cardId)) return it.seconds }
+        data.forEach { if (it.id.equals(cardId)) return it.seconds }
         return 0
     }
 
@@ -54,7 +63,7 @@ object Cache {
      * Save the data as a JSON string in SharedPreferences
      */
     fun save() {
-        val json = Serializer.toJson(list.toTypedArray())
+        val json = Serializer.toJson(data.toTypedArray())
         preferences.edit().putString(KEY_JSON, json).commit()
     }
 
@@ -63,13 +72,17 @@ object Cache {
      */
     private fun load() {
         val json = preferences.getString(KEY_JSON, "[]")
-        list = Serializer.fromJson(json, Array<CardData>::class.java).toMutableList()
+        data = Serializer.fromJson(json, Array<CardData>::class.java).toMutableList()
     }
 
-    private fun doIfContained(cardId: String, func: CardData.() -> Unit): Boolean {
-        list.forEach {
+    /**
+     * Execute action if the card is contained in the saved data
+     * @return true if the action was done (the card was on the data) or false otherwise
+     */
+    private fun doIfContained(cardId: String, action: CardData.() -> Unit): Boolean {
+        data.forEach {
             if (it.id.equals(cardId)) {
-                func(it)
+                it.action()
                 return true
             }
         }

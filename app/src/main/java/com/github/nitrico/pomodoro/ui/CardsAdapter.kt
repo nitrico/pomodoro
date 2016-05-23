@@ -22,9 +22,14 @@ class CardsAdapter(
 
         fun bind(card: TrelloCard) = with (itemView) {
             name.text = card.name
+
+            // show the card description only if it is not empty
             desc.setTextOrHideView(card.desc)
+
+            // show the add time button only for the To do list
             timer.showIfAndHideIfNot(isTodoList)
 
+            // show the time and pomodoros count only if they are not zero
             if (card.pomodoros != 0 || card.seconds != 0.toLong()) {
                 data.show()
                 pomodoros.text = card.pomodoros.toString()
@@ -33,7 +38,6 @@ class CardsAdapter(
             else data.hide()
 
             // click listeners
-
             open.setOnClickListener {  context.openCard(card) }
             open.setOnLongClickListener { context.toast(R.string.open_card); true }
             edit.setOnClickListener { EditCard(context, card) }

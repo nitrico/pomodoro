@@ -1,6 +1,7 @@
 package com.github.nitrico.pomodoro.ui
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.afollestad.materialdialogs.MaterialDialog
@@ -28,8 +29,8 @@ class TimerActivity : FluxActivity() {
         const val ACTION_LONG_BREAK = 1
     }
 
-    private val playIcon by lazy { resources.getDrawable(R.drawable.ic_play) }
-    private val pauseIcon by lazy { resources.getDrawable(R.drawable.ic_pause) }
+    private val playIcon by lazy { ContextCompat.getDrawable(this, R.drawable.ic_play) }
+    private val pauseIcon by lazy { ContextCompat.getDrawable(this, R.drawable.ic_pause) }
 
     private lateinit var stopButton: MenuItem
     private lateinit var card: TrelloCard
