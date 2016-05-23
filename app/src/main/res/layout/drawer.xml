@@ -7,7 +7,7 @@
     android:background="?android:windowBackground"
     android:orientation="vertical" >
 
-    <include layout="@layout/drawer_account" />
+    <include layout="@layout/drawer_profile" />
 
     <include layout="@layout/divider" />
 

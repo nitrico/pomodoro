@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:padding="16dp"
     android:background="?android:windowBackground"
+    android:clickable="true"
+    android:importantForAccessibility="no"
     android:orientation="horizontal"
     tools:showIn="@layout/drawer" >
 

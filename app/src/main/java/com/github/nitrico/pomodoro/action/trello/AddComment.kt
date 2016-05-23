@@ -10,12 +10,10 @@ class AddComment(
         private val comment: String) : Action() {
 
     init {
-
         Trello.api.addCommentToCard(cardId, comment)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ postAction() }, { postError(it) })
-
     }
 
 }

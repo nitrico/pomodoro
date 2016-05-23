@@ -19,12 +19,13 @@ import org.jetbrains.anko.uiThread
 class LogIn(private val context: Context) : Action() {
 
     companion object {
-        private const val KEY_LOGIN_URL = "KEY_LOGIN_URL"
+        const val CALLBACK_URL = "com.github.nitrico.pomodoro://trello-callback"
+        const val KEY_LOGIN_URL = "KEY_LOGIN_URL"
     }
 
     init {
         async() {
-            val url = Trello.provider.retrieveRequestToken(Trello.consumer, Trello.CALLBACK_URL)
+            val url = Trello.provider.retrieveRequestToken(Trello.consumer, CALLBACK_URL)
             uiThread { context.startActivity<LoginActivity>(KEY_LOGIN_URL to url) }
         }
     }
@@ -54,7 +55,7 @@ class LogIn(private val context: Context) : Action() {
             // custom WebViewClient to handle callback url and its params
             webview.setWebViewClient(object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    if (url.startsWith(Trello.CALLBACK_URL)) {
+                    if (url.startsWith(CALLBACK_URL)) {
                         val verifier = Uri.parse(url).getQueryParameter("oauth_verifier")
                         async() {
                             Trello.provider.retrieveAccessToken(Trello.consumer, verifier)

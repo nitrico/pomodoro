@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/stop"
-        android:title="Stop"
         android:icon="@drawable/ic_stop"
+        android:title="@string/stop"
         app:showAsAction="always" />
 
 </menu>

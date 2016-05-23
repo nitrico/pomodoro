@@ -17,9 +17,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         mocharyTypeface = Typeface.createFromAsset(assets, "fonts/Mochary.ttf")
-
         Flux.init(this, true)
         Cache.init(this)
     }

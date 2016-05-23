@@ -54,6 +54,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:clickable="true"
+            android:importantForAccessibility="no"
             android:orientation="vertical"
             tools:ignore="RtlHardcoded" >
             <TextView

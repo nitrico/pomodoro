@@ -16,7 +16,6 @@ interface Trello {
 
     companion object {
         const val VERSION = "1"
-        const val CALLBACK_URL = "com.github.nitrico.pomodoro://trello-callback"
 
         internal val consumer = OkHttpOAuthConsumer(BuildConfig.TRELLO_KEY, BuildConfig.TRELLO_SECRET)
         internal val provider = DefaultOAuthProvider(

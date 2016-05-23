@@ -19,7 +19,7 @@ import com.thesurix.gesturerecycler.GestureAdapter
 import com.thesurix.gesturerecycler.GestureManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.drawer_account.*
+import kotlinx.android.synthetic.main.drawer_profile.*
 import kotlinx.android.synthetic.main.drawer_config.*
 import org.jetbrains.anko.toast
 
@@ -91,7 +91,7 @@ class MainActivity : FluxActivity() {
     }
 
     override fun onError(error: ErrorAction) {
-        toast("Error in ${error.action}: ${error.throwable.message}")
+        toast("${error.action} # ${error.throwable.message}")
     }
 
     override fun onStoreChanged(change: StoreChange) {

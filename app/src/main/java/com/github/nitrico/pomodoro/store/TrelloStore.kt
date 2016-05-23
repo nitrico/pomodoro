@@ -47,6 +47,15 @@ object TrelloStore : Store() {
         }
 
 
+    @Synchronized fun init(context: Context) {
+        this.context = context
+        loadSessionFromPreferences()
+        if (user != null && token != null && secret != null) {
+            Trello.consumer.setTokenWithSecret(token, secret)
+            GetUser()
+        }
+    }
+
     override fun onAction(action: Action) = when (action) {
         is LogIn.Success -> logIn(action)
         is LogOut -> logOut(action)
@@ -58,23 +67,16 @@ object TrelloStore : Store() {
         else -> { }
     }
 
-    fun init(context: Context) {
-        this.context = context
-        loadSessionFromPreferences()
-
-        if (user != null && token != null && secret != null) {
-            Trello.consumer.setTokenWithSecret(token, secret)
-            GetUser()
-        }
-    }
-
     // GUARDAR EL ORDEN, AL MENOS DE LAS 3 PRIMERAS
     // qué pasa si no hay ningún board o se borra el actual (cuyo id esta aquí guardado) ???
 
-    private fun loadSessionFromPreferences() {
+    @Synchronized private fun loadSessionFromPreferences() {
         token = preferences.getString(KEY_TOKEN, null)
         secret = preferences.getString(KEY_SECRET, null)
         boardId = preferences.getString(KEY_BOARD_ID, null)
+        todoListId = preferences.getString(KEY_LIST_ID_TODO, null)
+        doingListId = preferences.getString(KEY_LIST_ID_DOING, null)
+        doneListId = preferences.getString(KEY_LIST_ID_DONE, null)
 
         // load User
         val userId = preferences.getString(KEY_USER_ID, null)
@@ -87,42 +89,18 @@ object TrelloStore : Store() {
         }
     }
 
-    private fun logIn(action: LogIn.Success) {
+    @Synchronized private fun logIn(action: LogIn.Success) {
         token = Trello.consumer.token
         secret = Trello.consumer.tokenSecret
-
         preferences.edit()
                 .putString(KEY_TOKEN, token)
                 .putString(KEY_SECRET, secret)
                 .commit()
-
         postChange(action)
         GetUser()
     }
 
-    private fun setUser(action: GetUser) {
-        user = action.user
-        boards = action.boards
-
-        preferences.edit()
-                .putString(KEY_USER_ID, user!!.id)
-                .putString(KEY_USER_EMAIL, user!!.email)
-                .putString(KEY_USER_FULL_NAME, user!!.fullName)
-                .putString(KEY_USER_AVATAR_HASH, user!!.avatarHash)
-                .commit()
-
-        // use latest used board or first one if never used one
-        if (boardId != null) {
-            val position = boards.findIndexById(boardId!!)
-            if (position != -1) setupBoard(boards[position], action)
-            else setupBoard(boards[0], action)
-        }
-        else setupBoard(boards[0], action)
-
-        postChange(action)
-    }
-
-    private fun logOut(action: LogOut) {
+    @Synchronized private fun logOut(action: LogOut) {
         logged = false
         token = null
         secret = null
@@ -134,7 +112,6 @@ object TrelloStore : Store() {
         todoCards = emptyList()
         doingCards = emptyList()
         doneCards = emptyList()
-
         preferences.edit()
                 .putString(KEY_TOKEN, null)
                 .putString(KEY_SECRET, null)
@@ -143,36 +120,79 @@ object TrelloStore : Store() {
                 .putString(KEY_USER_FULL_NAME, null)
                 .putString(KEY_USER_AVATAR_HASH, null)
                 .commit()
-
         postChange(action)
     }
 
-    private fun setupBoard(board: TrelloBoard, action: Action) {
+    @Synchronized private fun setUser(action: GetUser) {
+        user = action.user
+        boards = action.boards
+        preferences.edit()
+                .putString(KEY_USER_ID, user!!.id)
+                .putString(KEY_USER_EMAIL, user!!.email)
+                .putString(KEY_USER_FULL_NAME, user!!.fullName)
+                .putString(KEY_USER_AVATAR_HASH, user!!.avatarHash)
+                .commit()
+        // use latest used board or first one if never used one
+        if (boardId != null) {
+            val position = boards.findIndexById(boardId!!)
+            if (position != -1) setupBoard(boards[position], action)
+            else setupBoard(boards[0], action)
+        }
+        else setupBoard(boards[0], action)
+        postChange(action)
+    }
+
+    @Synchronized private fun setupBoard(board: TrelloBoard, action: Action) {
         this.board = board
         boardId = board.id
         lists = board.lists
         preferences.edit().putString(KEY_BOARD_ID, boardId).commit()
-        setupLists(lists[0].id, lists[1].id, lists[2].id, action)
+        // use latest used lists or first ones
+        if (lists.findIndexById(todoListId) != -1
+                && lists.findIndexById(doingListId) != -1
+                && lists.findIndexById(doneListId) != -1) {
+            setupLists(todoListId!!, doingListId!!, doneListId!!, action)
+        }
+        else setupLists(lists[0].id, lists[1].id, lists[2].id, action)
     }
 
-    private fun setupLists(todoId: String, doingId: String, doneId: String, action: Action) {
+    @Synchronized private fun setupLists(todoId: String, doingId: String, doneId: String, action: Action) {
         todoListId = todoId
         doingListId = doingId
         doneListId = doneId
         listIds = listOf(todoListId!!, doingListId!!, doneListId!!)
+
+        val todoPos = lists.findIndexById(todoId)
+        val doingPos = lists.findIndexById(doingId)
+        val donePos = lists.findIndexById(doneId)
+
+        if (todoPos != -1 && doingPos != -1 && donePos != -1) {
+            val temp = mutableListOf(lists[todoPos], lists[doingPos], lists[donePos])
+            lists.forEach { if (!temp.contains(it)) temp.add(it) }
+            lists = temp.toList()
+            preferences.edit()
+                    .putString(KEY_LIST_ID_TODO, todoListId)
+                    .putString(KEY_LIST_ID_DOING, doingListId)
+                    .putString(KEY_LIST_ID_DONE, doneListId)
+                    .commit()
+        } else {
+
+        }
+
         logged = true
         postChange(action)
         GetCards()
     }
 
-    private fun setCards(action: GetCards) {
+    @Synchronized private fun setCards(action: GetCards) {
         todoCards = action.todoCards
         doingCards = action.doingCards
         doneCards = action.doneCards
         postChange(action)
     }
 
-    private fun List<TrelloItem>.findIndexById(id: String): Int {
+    private fun List<TrelloItem>.findIndexById(id: String?): Int {
+        if (id == null) return -1
         for (i in 0..size-1) { if (get(i).id.equals(id)) return i }
         return -1
     }

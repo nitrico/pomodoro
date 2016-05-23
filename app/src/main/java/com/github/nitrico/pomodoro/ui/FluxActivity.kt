@@ -14,13 +14,13 @@ abstract class FluxActivity : AppCompatActivity(), ViewDispatch {
     override fun onResume() {
         super.onResume()
         register()
-        getPauseableStores().forEach { register() }
+        getPauseableStores().forEach { it.register() }
     }
 
     override fun onPause() {
         super.onPause()
         unregister()
-        getPauseableStores().forEach { unregister() }
+        getPauseableStores().forEach { it.unregister() }
     }
 
 }

@@ -27,9 +27,6 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
-    private val tablet: Boolean by lazy { activity.resources.getBoolean(R.bool.tablet) }
-    private val landscape: Boolean by lazy { activity.resources.getBoolean(R.bool.landscape) }
-    private val padding: Int by lazy { activity.resources.getDimension(R.dimen.recycler_padding).toInt() }
     private val listType: Int by lazy { arguments.getInt(KEY_LIST_TYPE, -1) }
 
     override fun getStores() = listOf(TrelloStore, TimerStore)
@@ -41,6 +38,13 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // poniendo estas condiciones arriba como lazy no se pierde el scroll al rotar, así sí
+        // pero haciendo eso entonces no cambia el número de columnas al rotar :/
+        val padding = activity.resources.getDimension(R.dimen.recycler_padding).toInt()
+        val landscape = activity.resources.getBoolean(R.bool.landscape)
+        val tablet = activity.resources.getBoolean(R.bool.tablet)
+
         list.setPadding(padding, padding, padding, padding + activity.navigationBarHeight)
 
         // initialize SwipeRefreshLayout
@@ -49,6 +53,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
             setColorSchemeResources(android.R.color.white)
             setProgressBackgroundColorSchemeResource(R.color.accent)
         }
+
         // columns
         val cols = getColumnsNumber(tablet, landscape)
         if (cols == 1) list.layoutManager = LinearLayoutManager(activity)
@@ -59,7 +64,8 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onError(error: ErrorAction) {
-        toast("error on : " +error.action +" " +error.throwable.message +" " +error.throwable.cause)
+        toast("${error.action} # ${error.throwable.message}")
+        layout.isRefreshing = false
     }
 
     override fun onStoreChanged(change: StoreChange) {

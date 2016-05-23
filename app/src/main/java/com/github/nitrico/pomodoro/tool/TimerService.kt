@@ -1,10 +1,17 @@
 package com.github.nitrico.pomodoro.tool
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.app.TaskStackBuilder
 import com.github.nitrico.pomodoro.App
+import com.github.nitrico.pomodoro.R
 import com.github.nitrico.pomodoro.action.timer.*
 import com.github.nitrico.pomodoro.data.TrelloCard
+import com.github.nitrico.pomodoro.ui.TimerActivity
+import org.jetbrains.anko.bundleOf
 
 class TimerService : Service() {
 
@@ -16,6 +23,8 @@ class TimerService : Service() {
         const val ACTION_STOP = 1
         const val ACTION_PAUSE = 2
         const val ACTION_RESUME = 3
+        const val ID_NOTIFICATION_PROGRESS = 0
+        const val ID_NOTIFICATION_FINISHED = 1
     }
 
     private lateinit var card: TrelloCard
@@ -42,24 +51,77 @@ class TimerService : Service() {
     private fun start(intent: Intent) {
         card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
         time = intent.extras.getLong(KEY_TIME)
-        if (time != App.TIME_POMODORO) isBreak = true
+        isBreak = time != App.TIME_POMODORO
 
         timer = object : Timer(time * 1000, 1000) {
+
             override fun onTick(millisUntilFinished: Long) {
-                Tick(time, millisUntilFinished)
+                Tick(millisUntilFinished)
+                val left = millisUntilFinished/1000.toLong()
+                val progress = time-left
+                notifyProgress(card.name, left.toTimeString(), time.toInt(), progress.toInt())
             }
+
             override fun onFinish() {
                 val timeToAdd = if (isBreak) 0 else time
                 Finish(card, timeToAdd)
+                NotificationManagerCompat.from(this@TimerService).cancel(ID_NOTIFICATION_PROGRESS)
+                val title = if (isBreak) "Break completed" else "Pomodoro completed"
+                notifyFinished(title, card.name)
                 stopSelf()
             }
-        }
-        timer?.start()
+
+        }.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NotificationManagerCompat.from(this).cancel(ID_NOTIFICATION_PROGRESS)
     }
 
     private fun stop() {
         timer?.cancel()
         stopSelf()
+    }
+
+    private fun notifyFinished(title: String, text: String) {
+        val builder = NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_pomodoro)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setTicker(title)
+                //.setSubText(text)
+                .setColor(resources.getColor(R.color.primary))
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setAutoCancel(true) // disappear when clicked
+        notify(ID_NOTIFICATION_FINISHED, builder)
+    }
+
+    private fun notifyProgress(title: String, text: String, max: Int, progress: Int) {
+        val builder = NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_pomodoro)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSubText(if (isBreak) "Break time" else "Pomodoro time")
+                .setColor(resources.getColor(R.color.primary))
+                .setProgress(max, progress, false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+                .setOngoing(true) // to avoid swipe to dismiss
+        notify(ID_NOTIFICATION_PROGRESS, builder)
+    }
+
+    private fun notify(notificationId: Int, builder: NotificationCompat.Builder) {
+        val intent = Intent(this, TimerActivity::class.java)
+        intent.putExtras(bundleOf(TimerActivity.KEY_CARD to card))
+        val stackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addNextIntent(intent)
+        val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        builder.setContentIntent(pendingIntent)
+        NotificationManagerCompat.from(this).notify(notificationId, builder.build())
     }
 
 }
