@@ -12,7 +12,6 @@
     <string name="name">Name</string>
     <string name="desc">Description</string>
     <string name="desc_optional">Description (optional)</string>
-    <string name="comment">Comment</string>
 
     <!-- Actions -->
     <string name="next_action">Next action</string>
