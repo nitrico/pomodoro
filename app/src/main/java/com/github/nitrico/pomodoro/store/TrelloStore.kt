@@ -20,8 +20,8 @@ object TrelloStore : Store() {
     private const val KEY_USER_AVATAR_HASH = "KEY_USER_AVATAR_HASH"
     private const val KEY_BOARD_ID = "KEY_BOARD_ID"
     private const val KEY_LIST_ID_TODO = "KEY_LIST_ID_TODO"
-    private const val KEY_LIST_ID_DONE = "KEY_LIST_ID_DONE"
     private const val KEY_LIST_ID_DOING = "KEY_LIST_ID_DOING"
+    private const val KEY_LIST_ID_DONE = "KEY_LIST_ID_DONE"
 
     private lateinit var context: Context
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
@@ -49,7 +49,10 @@ object TrelloStore : Store() {
             return names
         }
 
-
+    /**
+     * Initialize the object with a Context
+     * This method must be called before any other of this object
+     */
     @Synchronized fun init(context: Context) {
         this.context = context
         loadSessionFromPreferences()
@@ -69,9 +72,6 @@ object TrelloStore : Store() {
         is AddTodo, is AddComment, is EditCard, is MoveCard, is DeleteCard -> postChange(action)
         else -> { }
     }
-
-    // GUARDAR EL ORDEN, AL MENOS DE LAS 3 PRIMERAS
-    // qué pasa si no hay ningún board o se borra el actual (cuyo id esta aquí guardado) ???
 
     @Synchronized private fun loadSessionFromPreferences() {
         token = preferences.getString(KEY_TOKEN, null)
@@ -122,6 +122,10 @@ object TrelloStore : Store() {
                 .putString(KEY_USER_EMAIL, null)
                 .putString(KEY_USER_FULL_NAME, null)
                 .putString(KEY_USER_AVATAR_HASH, null)
+                .putString(KEY_BOARD_ID, null)
+                .putString(KEY_LIST_ID_TODO, null)
+                .putString(KEY_LIST_ID_DOING, null)
+                .putString(KEY_LIST_ID_DONE, null)
                 .commit()
         postChange(action)
     }
@@ -150,7 +154,7 @@ object TrelloStore : Store() {
         boardId = board.id
         lists = board.lists
         preferences.edit().putString(KEY_BOARD_ID, boardId).commit()
-        // use latest used lists or first ones
+        // use latest used lists (checking they belong to the current board) or first ones
         if (lists.findIndexById(todoListId) != -1
                 && lists.findIndexById(doingListId) != -1
                 && lists.findIndexById(doneListId) != -1) {
@@ -178,13 +182,11 @@ object TrelloStore : Store() {
                     .putString(KEY_LIST_ID_DOING, doingListId)
                     .putString(KEY_LIST_ID_DONE, doneListId)
                     .commit()
-        } else {
-
         }
 
         logged = true
         postChange(action)
-        GetCards()
+        //GetCards()
     }
 
     @Synchronized private fun setCards(action: GetCards) {

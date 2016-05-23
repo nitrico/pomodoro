@@ -57,8 +57,8 @@ class TimerService : Service() {
         timer = object : Timer(time * 1000, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                Tick(millisUntilFinished)
-                val left = millisUntilFinished/1000.toLong()
+                val left = millisUntilFinished/1000
+                Tick(left)
                 val progress = time-left
                 notifyProgress(card.name, left.toTimeString(), time.toInt(), progress.toInt())
             }

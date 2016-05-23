@@ -26,7 +26,7 @@
 
         <activity
             android:name=".ui.TimerActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.MainActivity" />
 
         <activity

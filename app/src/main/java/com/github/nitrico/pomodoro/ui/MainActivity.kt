@@ -137,10 +137,9 @@ class MainActivity : FluxActivity() {
         boardName.text = board.name
         currentBoardIndex = TrelloStore.boards.indexOf(board)
         // update drawer list
-        adapter.data = board.lists
+        adapter.data = TrelloStore.lists
         if (board.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
     }
-
 
     private inner class TabsAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
         private val titles = resources.getStringArray(R.array.titles)

@@ -12,8 +12,8 @@ import com.github.nitrico.pomodoro.tool.Cache
 object TimerStore : Store() {
 
     var isBreak: Boolean = false; private set
-    var isPaused: Boolean = false; private set
     var isRunning: Boolean = false; private set
+    var wasPaused: Boolean = false; private set
 
     var current: Long = 0; private set
     var total: Long = 0; private set
@@ -21,7 +21,7 @@ object TimerStore : Store() {
     override fun onAction(action: Action) {
         when (action) {
             is Tick -> @Synchronized {
-                current++
+                current = total - action.left
             }
             is Start -> @Synchronized {
                 total = action.time
@@ -30,7 +30,7 @@ object TimerStore : Store() {
             }
             is Pause -> @Synchronized {
                 isRunning = false
-                isPaused = true
+                wasPaused = true
             }
             is Resume -> @Synchronized {
                 isRunning = true
@@ -48,10 +48,10 @@ object TimerStore : Store() {
 
     private fun reset(cardId: String, time: Long) {
         if (!isBreak) Cache.addTime(cardId, time)
-        isBreak = false
         isRunning = false
-        isPaused = false
+        wasPaused = false
         current = 0
+        // no need to reset 'isBreak', it is set when the timer starts
     }
 
 }

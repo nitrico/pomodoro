@@ -57,7 +57,7 @@ class TimerActivity : FluxActivity() {
         fab.setOnClickListener {
             if (TimerStore.isRunning) Pause(this)
             else {
-                if (!TimerStore.isPaused) startTimer(App.TIME_POMODORO, false)
+                if (!TimerStore.wasPaused) startTimer(App.TIME_POMODORO, false)
                 else Resume(this)
             }
         }
@@ -66,7 +66,7 @@ class TimerActivity : FluxActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.timer, menu)
         stopButton = menu.findItem(R.id.stop)
-        stopButton.isVisible = false
+        stopButton.isVisible = !TimerStore.isBreak && (TimerStore.current != 0L)
         return true
     }
 
@@ -78,27 +78,23 @@ class TimerActivity : FluxActivity() {
 
     override fun onBackPressed() = stopTimer(true)
 
+    override fun onResume() {
+        super.onResume()
+        refreshProgress()
+    }
+
     override fun onError(error: ErrorAction) = toast("${error.action} # ${error.throwable.message}")
 
     override fun onStoreChanged(change: StoreChange) {
         when (change.store) {
             TimerStore -> when (change.action) {
-
-                is Resume -> fab.setImageDrawable(pauseIcon)
-
-                is Start -> fab.setImageDrawable(pauseIcon)
-
-                is Pause -> fab.setImageDrawable(playIcon)
-
-                is Tick -> {
-                    val current = TimerStore.current
-                    val left = TimerStore.total - current
-                    progress.max = TimerStore.total.toFloat()
-                    progress.setValue(current.toFloat())
-                    text.text = left.toTimeString()
-                    if (!TimerStore.isBreak) time.text = (card.seconds + current).toTimeString()
+                is Start, is Pause, is Resume, is Tick -> refreshProgress()
+                is Stop -> {
+                    stopButton.isVisible = TimerStore.current != 0L && !TimerStore.isBreak
+                    fab.setImageDrawable(playIcon)
+                    progress.setValue(0f)
+                    text.text = App.TIME_POMODORO.toTimeString()
                 }
-
                 is Finish -> {
                     progress.setValue(0f)
                     fab.show()
@@ -125,23 +121,24 @@ class TimerActivity : FluxActivity() {
                         }
                     }
                 }
-
-                is Stop -> {
-                    stopButton.isVisible = TimerStore.current != 0.toLong() && !TimerStore.isBreak
-                    fab.setImageDrawable(playIcon)
-                    progress.setValue(0f)
-                    text.text = App.TIME_POMODORO.toTimeString()
-                }
-
             }
         }
+    }
+
+    private fun refreshProgress() {
+        val current = TimerStore.current
+        val left = TimerStore.total - current
+        progress.max = TimerStore.total.toFloat()
+        progress.setValue(current.toFloat())
+        text.text = if (left != 0L) left.toTimeString() else App.TIME_POMODORO.toTimeString()
+        if (!TimerStore.isBreak) time.text = (card.seconds + current).toTimeString()
+        fab.setImageDrawable(if (TimerStore.isRunning) pauseIcon else playIcon)
     }
 
     private fun startTimer(time: Long, isBreak: Boolean) {
         stopButton.isVisible = true
         if (isBreak) fab.hide()
         //else MoveCard(card.id, TrelloStore.doingListId!!)
-
         progress.max = time.toFloat()
         progress.setValue(0f)
         Start(this, card,  time)
