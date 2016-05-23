@@ -64,10 +64,11 @@ class TimerService : Service() {
             }
 
             override fun onFinish() {
+                notifyProgress(card.name, 0L.toTimeString(), time.toInt(), time.toInt())
                 val timeToAdd = if (isBreak) 0 else time
                 Finish(card, timeToAdd)
                 NotificationManagerCompat.from(this@TimerService).cancel(ID_NOTIFICATION_PROGRESS)
-                val title = if (isBreak) "Break completed" else "Pomodoro completed"
+                val title = getString(if (isBreak) R.string.break_completed else R.string.pomodoro_completed)
                 notifyFinished(title, card.name)
                 stopSelf()
             }
@@ -101,11 +102,12 @@ class TimerService : Service() {
     }
 
     private fun notifyProgress(title: String, text: String, max: Int, progress: Int) {
+        val subText = getString(if (isBreak) R.string.break_time else R.string.pomodoro_time)
         val builder = NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_pomodoro)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSubText(if (isBreak) "Break time" else "Pomodoro time")
+                .setSubText(subText)
                 .setColor(ContextCompat.getColor(this, R.color.primary))
                 .setProgress(max, progress, false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

@@ -32,11 +32,13 @@ val Context.primaryColor: Int
     }
 
 fun Activity.setFullScreenLayout() {
-    window.decorView.systemUiVisibility= window.decorView.systemUiVisibility or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-    // unset translucent status for Lollipop or higher so status bar color can be modified
-    if (Build.VERSION.SDK_INT >= 21) {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    if (Build.VERSION.SDK_INT >= 19) {
+        window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        // unset translucent status for Lollipop or higher so status bar color can be modified
+        if (Build.VERSION.SDK_INT >= 21) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
     }
 }
 

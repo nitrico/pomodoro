@@ -13,9 +13,8 @@
     <dimen name="recycler_padding">8dp</dimen>
 
     <dimen name="title_textSize">40sp</dimen>
-    <dimen name="avatar_size">120dp</dimen>
+    <dimen name="avatar_size">96dp</dimen> <!-- 120dp -->
     <dimen name="timer_size">300dp</dimen>
-    <dimen name="timer_textSize">32sp</dimen>
-
+    <dimen name="timer_textSize">28sp</dimen> <!-- 32sp -->
 
 </resources>

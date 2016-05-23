@@ -1,8 +1,10 @@
 package com.github.nitrico.pomodoro.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -32,6 +34,7 @@ class MainActivity : FluxActivity() {
         }
     }
 
+    private lateinit var addItem: MenuItem
     private val adapter = DrawerListAdapter()
     private var currentBoardIndex = 0
 
@@ -75,6 +78,8 @@ class MainActivity : FluxActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
+        addItem = menu.findItem(R.id.add)
+        setupAddItem(TrelloStore.logged)
         return true
     }
 
@@ -96,23 +101,24 @@ class MainActivity : FluxActivity() {
     override fun onStoreChanged(change: StoreChange) {
         when (change.store) {
             TrelloStore -> when (change.action) {
-                is GetUser, is LogOut -> setupAccount()
+                is GetUser, is LogOut -> {
+                    setupAddItem(TrelloStore.logged)
+                    setupAccount()
+                }
                 is SelectBoard -> setupBoard(TrelloStore.board!!)
             }
         }
     }
 
     private fun setupAccount() {
-        setupProfile(TrelloStore.logged, TrelloStore.user)
-        if (TrelloStore.logged) {
-            splash.hide()
+        val logged = TrelloStore.logged
+        setupProfile(logged, TrelloStore.user)
+        drawerConfig.showIfAndHideIfNot(logged)
+        if (logged) {
             drawerConfig.show()
             setupBoard(TrelloStore.board!!)
         }
-        else {
-            splash.show()
-            drawerConfig.hide()
-        }
+        else drawerConfig.hide()
     }
 
     private fun setupProfile(logged: Boolean, user: TrelloMember?) {
@@ -139,6 +145,12 @@ class MainActivity : FluxActivity() {
         // update drawer list
         adapter.data = TrelloStore.lists
         if (board.lists.size > 3) unusedHeader.show() else unusedHeader.hide()
+    }
+
+    private fun setupAddItem(logged: Boolean) {
+        addItem.isEnabled = logged
+        val tintColor = if (logged) Color.WHITE else Color.parseColor("#60FFFFFF")
+        DrawableCompat.setTint(addItem.icon, tintColor)
     }
 
     private inner class TabsAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {

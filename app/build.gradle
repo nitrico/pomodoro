@@ -35,9 +35,7 @@ buildscript {
 }
 
 repositories {
-    maven {
-        url "http://dl.bintray.com/glomadrian/maven" // for DashedCircularProgress
-    }
+    maven { url "http://dl.bintray.com/glomadrian/maven" } // for DashedCircularProgress
 }
 
 dependencies {

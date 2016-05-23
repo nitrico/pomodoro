@@ -60,6 +60,7 @@ object TrelloStore : Store() {
             Trello.consumer.setTokenWithSecret(token, secret)
             GetUser()
         }
+        else LogIn(context)
     }
 
     override fun onAction(action: Action) = when (action) {
@@ -177,16 +178,16 @@ object TrelloStore : Store() {
             val temp = mutableListOf(lists[todoPos], lists[doingPos], lists[donePos])
             lists.forEach { if (!temp.contains(it)) temp.add(it) }
             lists = temp.toList()
-            preferences.edit()
-                    .putString(KEY_LIST_ID_TODO, todoListId)
-                    .putString(KEY_LIST_ID_DOING, doingListId)
-                    .putString(KEY_LIST_ID_DONE, doneListId)
-                    .commit()
         }
+        preferences.edit()
+                .putString(KEY_LIST_ID_TODO, todoListId)
+                .putString(KEY_LIST_ID_DOING, doingListId)
+                .putString(KEY_LIST_ID_DONE, doneListId)
+                .commit()
 
         logged = true
         postChange(action)
-        //GetCards()
+        GetCards()
     }
 
     @Synchronized private fun setCards(action: GetCards) {

@@ -27,25 +27,19 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         fun newInstance(listType: Int) = ListFragment().withArguments(KEY_LIST_TYPE to listType)
     }
 
+    private val padding by lazy { activity.resources.getDimension(R.dimen.recycler_padding).toInt() }
+    private val landscape by lazy { activity.resources.getBoolean(R.bool.landscape) }
+    private val tablet by lazy { activity.resources.getBoolean(R.bool.tablet) }
     private val listType: Int by lazy { arguments.getInt(KEY_LIST_TYPE, -1) }
 
     override fun getStores() = listOf(TrelloStore, TimerStore)
 
     override fun onCreateView(li: LayoutInflater, container: ViewGroup?, savedState: Bundle?): View {
-        retainInstance = true
         return li.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        // poniendo estas condiciones arriba como lazy no se pierde el scroll al rotar, así sí
-        // pero haciendo eso entonces no cambia el número de columnas al rotar :/
-        // probar a poner los items o el adapter o los dos como propiedades
-        val padding = activity.resources.getDimension(R.dimen.recycler_padding).toInt()
-        val landscape = activity.resources.getBoolean(R.bool.landscape)
-        val tablet = activity.resources.getBoolean(R.bool.tablet)
-
         list.setPadding(padding, padding, padding, padding + activity.navigationBarHeight)
 
         // initialize SwipeRefreshLayout
@@ -61,7 +55,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
         else list.layoutManager = StaggeredGridLayoutManager(cols, StaggeredGridLayoutManager.VERTICAL)
 
         // set items
-        if (savedInstanceState == null) GetCards() else setItems()
+        if (savedInstanceState == null && TrelloStore.logged) GetCards() else setItems()
     }
 
     override fun onError(error: ErrorAction) {
@@ -114,7 +108,7 @@ class ListFragment : FluxFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun getColumnsNumber(tablet: Boolean, landscape: Boolean): Int {
-        return if (tablet) { if (landscape) 2 else 3 }
+        return if (tablet) { if (landscape) 3 else 4 }
         else { if (landscape) 2 else 1 }
     }
 

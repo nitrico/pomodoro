@@ -33,6 +33,10 @@
     <string name="select">Select</string>
     <string name="cancel">Cancel</string>
     <string name="sure">Are you sure?</string>
+    <string name="break_time">Break time</string>
+    <string name="break_completed">Break completed</string>
+    <string name="pomodoro_time">Pomodoro time</string>
+    <string name="pomodoro_completed">Pomodoro completed</string>
 
     <!-- Settings drawer -->
     <string name="login">Connect with Trello</string>

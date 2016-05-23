@@ -13,27 +13,10 @@
 
         <include layout="@layout/activity_main_appbar" />
 
-        <FrameLayout
-            android:id="@+id/snack"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/splash"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="?colorPrimary"
-                android:text="Logging..." />
-        </FrameLayout>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.LinearInterpolator
 import com.afollestad.materialdialogs.MaterialDialog
 import com.github.nitrico.flux.action.ErrorAction
 import com.github.nitrico.flux.store.StoreChange
@@ -49,6 +50,7 @@ class TimerActivity : FluxActivity() {
         layout.setPadding(0, 0, 0, navigationBarHeight)
         card = intent.extras.getSerializable(KEY_CARD) as TrelloCard
 
+        progress.setInterpolator(LinearInterpolator())
         text.text = App.TIME_POMODORO.toTimeString()
         name.text = card.name
         time.text = card.seconds.toTimeString()
